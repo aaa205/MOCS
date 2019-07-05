@@ -57,7 +57,7 @@ public class MyFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d("Test","My onCreate");
+
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
@@ -68,7 +68,7 @@ public class MyFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        Log.d("Test","My onCreateView");
+
         return inflater.inflate(R.layout.fragment_my, container, false);
     }
 
@@ -82,7 +82,7 @@ public class MyFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        Log.d("Test","My attach");
+
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
         } else {
@@ -94,7 +94,7 @@ public class MyFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        Log.d("Test","My detach");
+
         mListener = null;
     }
 

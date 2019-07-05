@@ -23,6 +23,7 @@ public class LoginActivity extends AppCompatActivity {
     EditText edit_account;
     @BindView(R.id.edit_password)
     EditText edit_password;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,9 +33,9 @@ public class LoginActivity extends AppCompatActivity {
 
     //点击事件 登录
     @OnClick(R.id.but_login)
-    public void clickToLogin(){
+    public void clickToLogin() {
         //暂时
-        Intent intent=new Intent(LoginActivity.this, MainActivity.class);
+        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
         startActivity(intent);
     }
 }

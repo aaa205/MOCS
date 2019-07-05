@@ -7,11 +7,11 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 
 import com.ashokvarma.bottomnavigation.BottomNavigationBar;
 import com.ashokvarma.bottomnavigation.BottomNavigationItem;
 import com.mocs.R;
+import com.mocs.home.controller.HomeFragment;
 
 import java.util.ArrayList;
 
@@ -19,13 +19,13 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity implements BottomNavigationBar.OnTabSelectedListener,
-        ViewPager.OnPageChangeListener,HomeFragment.OnFragmentInteractionListener,
-        MessageFragment.OnFragmentInteractionListener ,MyFragment.OnFragmentInteractionListener{
+        ViewPager.OnPageChangeListener,ExploreFragment.OnFragmentInteractionListener,
+        MessageFragment.OnFragmentInteractionListener, MyFragment.OnFragmentInteractionListener {
     @BindView(R.id.bottomBar)
     BottomNavigationBar bottomNavigationBar;
     @BindView(R.id.viewPager)
     ViewPager mPager;
-    private static int NUM_ITEMS = 3;//底部导航栏item数
+    private static int NUM_ITEMS = 4;//底部导航栏item数
     private MyAdapter mAdapter;
 
     @Override
@@ -40,12 +40,14 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationB
     private void init() {
         initNavigationBar();
         mAdapter = new MyAdapter(getSupportFragmentManager());
-        mAdapter.mList.add(MessageFragment.newInstance(null,null));
-        mAdapter.mList.add(HomeFragment.newInstance(null,null));
-        mAdapter.mList.add(MyFragment.newInstance(null,null));
+        mAdapter.mList.add(HomeFragment.newInstance());
+        mAdapter.mList.add(ExploreFragment.newInstance(null, null));
+        mAdapter.mList.add(MessageFragment.newInstance(null, null));
+        mAdapter.mList.add(MyFragment.newInstance(null, null));
         mPager.setAdapter(mAdapter);//将fragment装入viewpager
-        mPager.setCurrentItem(1);//设置默认页面，要接在setAdapter后
+        mPager.setCurrentItem(0);//设置默认页面，要接在setAdapter后
         mPager.addOnPageChangeListener(this);//监听器
+        mPager.setOffscreenPageLimit(3);//缓存半径
 
     }
 
@@ -55,10 +57,11 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationB
                 .setInActiveColor(R.color.colorGreyTab)
                 .setMode(BottomNavigationBar.MODE_DEFAULT)
                 .setBackgroundStyle(BottomNavigationBar.BACKGROUND_STYLE_STATIC)
-                .addItem(new BottomNavigationItem(R.drawable.ic_message_grey_400_24dp, "消息"))
                 .addItem(new BottomNavigationItem(R.drawable.ic_home_grey_400_24dp, "首页"))
+                .addItem(new BottomNavigationItem(R.drawable.ic_explore_grey_400_24dp, "发现"))
+                .addItem(new BottomNavigationItem(R.drawable.ic_message_grey_400_24dp, "消息"))
                 .addItem(new BottomNavigationItem(R.drawable.ic_account_box_grey_400_24dp, "我的"))
-                .setFirstSelectedPosition(1)
+                .setFirstSelectedPosition(0)
                 .initialise();
         bottomNavigationBar.setTabSelectedListener(this);
     }
@@ -98,7 +101,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationB
 
     }
 
-    //todo 未实现懒加载
+
     public static class MyAdapter extends FragmentPagerAdapter {
         ArrayList<Fragment> mList = new ArrayList<>(NUM_ITEMS);
 
