@@ -12,6 +12,7 @@ import com.ashokvarma.bottomnavigation.BottomNavigationBar;
 import com.ashokvarma.bottomnavigation.BottomNavigationItem;
 import com.mocs.R;
 import com.mocs.home.controller.HomeFragment;
+import com.mocs.main.controller.message.MessageFragment;
 
 import java.util.ArrayList;
 
