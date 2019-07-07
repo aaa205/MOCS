@@ -1,23 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+<LinearLayout android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".home.controller.HomeFragment">
-
-
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android" >
+    <Toolbar
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="275dp"
-        android:layout_marginEnd="163dp"
-        android:layout_marginStart="163dp"
-        android:layout_marginTop="274dp"
-        android:text="Home"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-</android.support.constraint.ConstraintLayout>
+        android:navigationIcon="@drawable/ic_menu_grey_800_24dp"
+        android:title="首页"
+        android:layout_gravity="center"
+        android:background="@color/colorPrimary"
+        android:layout_marginBottom="5dp"></Toolbar>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <com.youth.banner.Banner
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginTop="0dp"
+                android:layout_marginBottom="10dp"
+                android:id="@+id/banner"
+                android:contextClickable="true"
+                android:background="@color/colorPrimary"
+                ></com.youth.banner.Banner>
+
+            <android.support.v7.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:id="@+id/newsRV">
+
+            </android.support.v7.widget.RecyclerView>
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>
+
+
+

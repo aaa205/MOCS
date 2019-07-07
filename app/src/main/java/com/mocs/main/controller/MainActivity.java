@@ -1,5 +1,7 @@
 package com.mocs.main.controller;
 
+import android.content.Context;
+import android.content.res.AssetManager;
 import android.net.Uri;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -30,6 +32,8 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationB
     private static int NUM_ITEMS = 4;//底部导航栏item数
     private MyAdapter mAdapter;
 
+    private AssetManager assetManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,6 +55,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationB
         mPager.addOnPageChangeListener(this);//监听器
         mPager.setOffscreenPageLimit(3);//缓存半径
 
+        assetManager = getAssets();
     }
 
     //初始化导航栏
@@ -123,4 +128,5 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationB
         }
 
     }
+
 }
