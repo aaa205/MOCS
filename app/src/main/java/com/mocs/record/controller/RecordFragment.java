@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import com.mocs.R;
 import com.mocs.record.adapter.RecordAdapter;
 import com.mocs.record.bean.Record;
+import com.mocs.record.bean.RecordStep;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -54,20 +55,28 @@ public class RecordFragment extends Fragment {
     private void initRecordList(){
         SimpleDateFormat sdf=new SimpleDateFormat();
         sdf.applyPattern("MM-dd HH:mm");
-        StringBuilder stringBuilder=new StringBuilder("description");
+        StringBuilder stringBuilder=new StringBuilder("description ");
+        List<RecordStep> steps=new ArrayList<>();
+        for (int i=0;i<6;i++){
+            RecordStep recordStep=new RecordStep();
+            recordStep.setTime(sdf.format(new Date()));
+            recordStep.setReportText("step "+1);
+            steps.add(recordStep);
+        }
         for(int i=0;i<10;i++){
             Record record=new Record();
             stringBuilder.append("description");
             record.setTime(sdf.format(new Date()));
             record.setType("TYPE0-TEST");
             record.setDescription(stringBuilder.toString());
+            record.setRecordStepList(steps);
             mRecordList.add(record);
         }
     }
     private void initView(){
         LinearLayoutManager layoutManager=new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
-        RecordAdapter adapter=new RecordAdapter(mRecordList);
+        RecordAdapter adapter=new RecordAdapter(getContext(),mRecordList);
         recyclerView.setAdapter(adapter);
     }
     @Override

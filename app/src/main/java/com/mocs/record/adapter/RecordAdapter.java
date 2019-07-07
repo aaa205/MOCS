@@ -1,6 +1,8 @@
 package com.mocs.record.adapter;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,12 +22,13 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-
+/**RecyclerView嵌套 性能巨低 以后要优化*/
 public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.ViewHolder> {
     private List<Record> mRecordList;
-
-    public RecordAdapter(List<Record> recordList) {
+    private Context mContext;
+    public RecordAdapter(Context mContext, List<Record> recordList) {
         this.mRecordList = recordList;
+        this.mContext=mContext;
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
@@ -39,16 +42,18 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.ViewHolder
         TextView description_text;
         @BindView(R.id.expandableLayout_record)
         ExpandableLayout expandableLayout;
-        @BindView(R.id.timeLine_record)
-        TimelineView timeLine;
+
+        @BindView(R.id.timeline_recyclerView)
+        RecyclerView timeLine_recyclerView;
         private boolean expanded;
         private View itemView;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            this.itemView=itemView;
+            this.itemView = itemView;
             ButterKnife.bind(this, itemView);
             expanded = false;//默认不展开
         }
+
         /**设置是否展开*/
         public void setExpanded(boolean b) {
             if (b != expanded) {
@@ -81,6 +86,11 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.ViewHolder
         viewHolder.time_text.setText(record.getTime());
         viewHolder.type_text.setText(record.getType());
         viewHolder.description_text.setText(record.getDescription());
+        //嵌套timeline
+        RecyclerView recyclerView=viewHolder.timeLine_recyclerView;
+        recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
+        TimeLineAdapter timeLineAdapter=new TimeLineAdapter(record.getRecordStepList());
+        recyclerView.setAdapter(timeLineAdapter);
     }
 
     @Override

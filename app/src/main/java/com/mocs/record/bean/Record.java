@@ -1,13 +1,17 @@
 package com.mocs.record.bean;
 
 import java.util.List;
-import java.util.Map;
-/**记录每个提交的问题的信息*/
+
+/**
+ * 记录每个提交的问题的信息
+ */
 public class Record {
+    private long recordId;
     private String time;
     private String type;
     private String description;
-    private Map<String,String> stepMap;//记录了时间戳和处理步骤
+    private List<RecordStep> recordStepList;
+
     public String getTime() {
         return time;
     }
@@ -30,5 +34,21 @@ public class Record {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public List<RecordStep> getRecordStepList() {
+        return recordStepList;
+    }
+
+    public void setRecordStepList(List<RecordStep> recordStepList) {
+        this.recordStepList = recordStepList;
+    }
+
+    public long getRecordId() {
+        return recordId;
+    }
+
+    public void setRecordId(long recordId) {
+        this.recordId = recordId;
     }
 }

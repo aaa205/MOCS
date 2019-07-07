@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_marginBottom="3sp"
     android:orientation="vertical">
 
@@ -59,12 +60,13 @@
             android:id="@+id/expandableLayout_record"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-            <com.github.vipulasri.timelineview.TimelineView
-                android:id="@+id/timeLine_record"
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/timeline_recyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:lineWidth="2dp"
-                app:startLineColor="@color/colorPrimary"/>
+                android:padding="@dimen/fixed_width_padding"
+                tools:listitem="@layout/item_timeline"/>
+
         </net.cachapa.expandablelayout.ExpandableLayout>
     </LinearLayout>
 
