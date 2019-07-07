@@ -12,7 +12,7 @@ import com.ashokvarma.bottomnavigation.BottomNavigationBar;
 import com.ashokvarma.bottomnavigation.BottomNavigationItem;
 import com.mocs.R;
 import com.mocs.home.controller.HomeFragment;
-import com.mocs.main.controller.message.MessageFragment;
+import com.mocs.record.controller.RecordFragment;
 
 import java.util.ArrayList;
 
@@ -20,8 +20,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity implements BottomNavigationBar.OnTabSelectedListener,
-        ViewPager.OnPageChangeListener,ExploreFragment.OnFragmentInteractionListener,
-        MessageFragment.OnFragmentInteractionListener, MyFragment.OnFragmentInteractionListener {
+        ViewPager.OnPageChangeListener, MessageFragment.OnFragmentInteractionListener, MyFragment.OnFragmentInteractionListener {
     @BindView(R.id.bottomBar)
     BottomNavigationBar bottomNavigationBar;
     @BindView(R.id.viewPager)
@@ -37,12 +36,12 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationB
         init();
     }
 
-    //初始化各种
+    //初始化底部导航栏
     private void init() {
         initNavigationBar();
         mAdapter = new MyAdapter(getSupportFragmentManager());
         mAdapter.mList.add(HomeFragment.newInstance());
-        mAdapter.mList.add(ExploreFragment.newInstance(null, null));
+        mAdapter.mList.add(RecordFragment.newInstance());
         mAdapter.mList.add(MessageFragment.newInstance(null, null));
         mAdapter.mList.add(MyFragment.newInstance(null, null));
         mPager.setAdapter(mAdapter);//将fragment装入viewpager
@@ -59,7 +58,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationB
                 .setMode(BottomNavigationBar.MODE_DEFAULT)
                 .setBackgroundStyle(BottomNavigationBar.BACKGROUND_STYLE_STATIC)
                 .addItem(new BottomNavigationItem(R.drawable.ic_home_grey_400_24dp, "首页"))
-                .addItem(new BottomNavigationItem(R.drawable.ic_explore_grey_400_24dp, "发现"))
+                .addItem(new BottomNavigationItem(R.drawable.ic_explore_grey_400_24dp, "记录"))
                 .addItem(new BottomNavigationItem(R.drawable.ic_message_grey_400_24dp, "消息"))
                 .addItem(new BottomNavigationItem(R.drawable.ic_account_box_grey_400_24dp, "我的"))
                 .setFirstSelectedPosition(0)
