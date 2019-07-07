@@ -134,6 +134,14 @@
                     android:layout_height="wrap_content"
                     android:text="账号"
                     android:layout_centerVertical="true" />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="20dp"
+                    android:src="@drawable/arrow_left_black"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:scaleType="centerInside" />
                 <View
                     android:layout_width="wrap_content"
                     android:layout_height="1dp"
@@ -158,6 +166,14 @@
                     android:layout_height="wrap_content"
                     android:text="帮助与反馈"
                     android:layout_centerVertical="true" />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="20dp"
+                    android:src="@drawable/arrow_left_black"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:scaleType="centerInside" />
                 <View
                     android:layout_width="wrap_content"
                     android:layout_height="1dp"
@@ -182,6 +198,14 @@
                     android:layout_height="wrap_content"
                     android:text="设置"
                     android:layout_centerVertical="true" />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="20dp"
+                    android:src="@drawable/arrow_left_black"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:scaleType="centerInside" />
                 <View
                     android:layout_width="wrap_content"
                     android:layout_height="1dp"
