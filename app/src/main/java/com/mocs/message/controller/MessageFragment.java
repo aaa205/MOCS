@@ -1,6 +1,5 @@
-package com.mocs.main.controller.message;
+package com.mocs.message.controller;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.net.Uri;
@@ -17,6 +16,7 @@ import android.widget.Toast;
 
 
 import com.mocs.R;
+import com.mocs.message.adapter.MessageAdapter;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;

@@ -4,13 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:layout_margin="10dp">
-
-    <ImageView
-        android:id="@+id/message_image"
-        android:layout_width="52dp"
-        android:layout_height="52dp"
-        android:layout_marginRight="5dp"/>
+    android:layout_margin="4dp">
 
 
     <LinearLayout
@@ -56,12 +50,12 @@
         <TextView
             android:id="@+id/message_content"
             android:layout_width="match_parent"
-            android:layout_height="58dp"
+            android:layout_height="40dp"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="5dp"
             android:textColor="#908d8d"
-            android:textSize="10sp"
+            android:textSize="14sp"
             android:typeface="sans"
             android:maxLines="2"
             android:ellipsize="end"

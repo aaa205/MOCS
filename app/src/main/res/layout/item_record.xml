@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_marginBottom="3sp"
     android:orientation="vertical">
 
@@ -50,24 +50,33 @@
                 android:paddingRight="2sp"
                 android:src="@drawable/ic_keyboard_arrow_down_grey_400_36dp" />
         </LinearLayout>
+
         <TextView
             android:id="@+id/description_record"
-            android:text="333"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:maxLines="3"/>
+            android:maxLines="3"
+            android:text="333" />
+
         <net.cachapa.expandablelayout.ExpandableLayout
             android:id="@+id/expandableLayout_record"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/timeline_recyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/fixed_width_padding"
-                tools:listitem="@layout/item_timeline"/>
+                tools:listitem="@layout/item_timeline" />
 
         </net.cachapa.expandablelayout.ExpandableLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:layout_marginTop="3sp"
+            android:background="@color/colorGreyLine"></View>
     </LinearLayout>
 
 

@@ -1,4 +1,4 @@
-package com.mocs.main.controller.message;
+package com.mocs.message.adapter;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -11,10 +11,10 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.mocs.R;
+import com.mocs.message.controller.MessageFragment;
 
 import java.util.List;
 
-import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHolder>{
@@ -24,7 +24,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         View itemview;
-        ImageView tTag;
+//        ImageView tTag;
         TextView tName;
         TextView tContent;
         TextView tTime;
@@ -33,7 +33,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
             super(view);
             ButterKnife.bind(this,view);
             itemview=view;
-            tTag = (ImageView) view.findViewById(R.id.message_image);
+//            tTag = (ImageView) view.findViewById(R.id.message_image);
             tName = (TextView) view.findViewById(R.id.message_name);
             tContent = (TextView) view.findViewById(R.id.message_content);
             tTime = (TextView) view.findViewById(R.id.message_time);
@@ -61,7 +61,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         holder.tName.setText(message.getName());
         holder.tContent.setText(message.getContent());
         holder.tTime.setText(message.getTime());
-        Glide.with(mContext).load(message.getTag()).into(holder.tTag);
+//        Glide.with(mContext).load(message.getTag()).into(holder.tTag);
         //在adapter中设置item点击事件
         if (mItemClickListener!=null){
             holder.itemview.setOnClickListener(new View.OnClickListener() {

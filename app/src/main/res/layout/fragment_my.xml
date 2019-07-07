@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".main.controller.MyFragment">
+    tools:context=".my.controller.MyFragment">
 
     <android.support.v4.widget.NestedScrollView
         android:id="@+id/scrollView"
@@ -219,10 +219,12 @@
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
 
-    <!--占住toolbar位置-->
-    <View android:background="#2dcb70"
+    <Toolbar
         android:layout_width="match_parent"
-        android:layout_height="65dp" />
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:title="我的"
+        android:titleTextColor="@color/colorPageTitle"></Toolbar>
 
 
 </RelativeLayout>
