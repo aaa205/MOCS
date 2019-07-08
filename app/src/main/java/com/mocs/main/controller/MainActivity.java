@@ -22,7 +22,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity implements BottomNavigationBar.OnTabSelectedListener,
-        ViewPager.OnPageChangeListener, MessageFragment.OnFragmentInteractionListener, MyFragment.OnFragmentInteractionListener {
+        ViewPager.OnPageChangeListener,  MyFragment.OnFragmentInteractionListener {
     @BindView(R.id.bottomBar)
     BottomNavigationBar bottomNavigationBar;
     @BindView(R.id.viewPager)
@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationB
         mAdapter = new MyAdapter(getSupportFragmentManager());
         mAdapter.mList.add(HomeFragment.newInstance());
         mAdapter.mList.add(RecordFragment.newInstance());
-        mAdapter.mList.add(MessageFragment.newInstance(null, null));
+        mAdapter.mList.add(MessageFragment.newInstance());
         mAdapter.mList.add(MyFragment.newInstance(null, null));
         mPager.setAdapter(mAdapter);//将fragment装入viewpager
         mPager.setCurrentItem(0);//设置默认页面，要接在setAdapter后

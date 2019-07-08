@@ -1,6 +1,8 @@
 package com.mocs.record.controller;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -20,6 +22,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.Unbinder;
 
 
@@ -27,7 +30,8 @@ public class RecordFragment extends Fragment {
     private Unbinder unbinder;
     @BindView(R.id.recyclerView_record)
     RecyclerView recyclerView;
-
+    @BindView(R.id.add_button_record)
+    FloatingActionButton floatingButton;
     private List<Record> mRecordList=new ArrayList<>();
 
     public static RecordFragment newInstance() {
@@ -78,7 +82,13 @@ public class RecordFragment extends Fragment {
         recyclerView.setLayoutManager(layoutManager);
         RecordAdapter adapter=new RecordAdapter(getContext(),mRecordList);
         recyclerView.setAdapter(adapter);
+        /**临时*/
+        floatingButton.setOnClickListener((v)->{
+            Intent intent=new Intent(getContext(),MapActivity.class);
+            startActivity(intent);
+        });
     }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
