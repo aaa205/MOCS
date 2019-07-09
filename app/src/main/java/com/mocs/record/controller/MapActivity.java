@@ -9,6 +9,9 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.Toolbar;
 
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
@@ -16,6 +19,7 @@ import com.amap.api.location.AMapLocationClientOption;
 import com.amap.api.location.AMapLocationListener;
 import com.amap.api.maps2d.AMap;
 
+import com.amap.api.maps2d.CameraUpdateFactory;
 import com.amap.api.maps2d.LocationSource;
 
 import com.amap.api.maps2d.MapView;
@@ -30,6 +34,8 @@ import butterknife.ButterKnife;
 public class MapActivity extends AppCompatActivity implements LocationSource, AMapLocationListener {
     @BindView(R.id.mapView)
     MapView mMapView;
+    @BindView(R.id.toolbar_map)
+    Toolbar toolbar;
     private AMap aMap;
     private OnLocationChangedListener mListener;
     private AMapLocationClient mLocationClient;
@@ -40,8 +46,9 @@ public class MapActivity extends AppCompatActivity implements LocationSource, AM
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
         ButterKnife.bind(this);
-        initMap();
+        checkPermission();
         mMapView.onCreate(savedInstanceState);
+        toolbar.inflateMenu(R.menu.menu_map);
     }
 
     /**
@@ -50,7 +57,7 @@ public class MapActivity extends AppCompatActivity implements LocationSource, AM
     private void initMap() {
         if (aMap == null) {
             aMap = mMapView.getMap();
-            checkPermission();
+            setUpMap();
         }
     }
 
@@ -64,13 +71,13 @@ public class MapActivity extends AppCompatActivity implements LocationSource, AM
                 .fromResource(R.drawable.location_marker));// 设置小蓝点的图标
         myLocationStyle.strokeColor(Color.argb(0, 0, 0, 0));// 设置圆形的边框颜色
         myLocationStyle.radiusFillColor(Color.argb(0, 0, 0, 0));// 设置圆形的填充颜色
-        // myLocationStyle.anchor(int,int)//设置小蓝点的锚点
         myLocationStyle.strokeWidth(0);// 设置圆形的边框粗细
+        aMap.moveCamera(CameraUpdateFactory.zoomTo(aMap.getMaxZoomLevel()));
         aMap.setMyLocationStyle(myLocationStyle);
+        aMap.getUiSettings().setMyLocationButtonEnabled(true);
         aMap.setLocationSource(this);// 设置定位监听
         aMap.getUiSettings().setMyLocationButtonEnabled(true);// 设置默认定位按钮是否显示
         aMap.setMyLocationEnabled(true);// 设置为true表示显示定位层并可触发定位，false表示隐藏定位层并不可触发定位，默认是false
-        // aMap.setMyLocationType()
     }
     /**检查并申请权限*/
     private void checkPermission() {
@@ -78,7 +85,8 @@ public class MapActivity extends AppCompatActivity implements LocationSource, AM
                 Manifest.permission.ACCESS_COARSE_LOCATION)) {
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 0);
-        }
+        }else
+            initMap();
     }
 
     @Override
@@ -86,10 +94,26 @@ public class MapActivity extends AppCompatActivity implements LocationSource, AM
         switch (requestCode){
             case 0:{
                 if (grantResults.length>0&&grantResults[0]==PackageManager.PERMISSION_GRANTED){
-                    setUpMap();//设置地图
+                    initMap();
                 }
             }
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+       // getMenuInflater().inflate(R.menu.menu_map,menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.confirm_map:
+                //todo
+                break;
+        }
+        return true;
     }
 
     @Override
