@@ -1,86 +1,158 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:layout_marginLeft="20dp"
-              android:layout_marginRight="20dp"
-              android:orientation="vertical"
-              tools:context=".login.controller.LoginActivity">
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/linearLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginLeft="20dp"
+    android:layout_marginRight="20dp"
+    tools:context=".login.controller.LoginActivity">
 
     <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="40dp"
-            android:text="乐道"
-            android:textColor="@color/colorPageTitle"
-            android:textSize="36sp"/>
+        android:id="@+id/text_login_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:text="乐道"
+        android:textColor="@color/colorPageTitle"
+        android:textSize="36sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <android.support.design.widget.TextInputLayout
-            android:id="@+id/inputlay_account"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            app:errorEnabled="true"
-            app:hintEnabled="true">
+        android:id="@+id/inputlay_account"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        app:errorEnabled="true"
+        app:hintEnabled="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_login_title">
 
         <EditText
-                android:id="@+id/edit_account"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="账户"/>
+            android:id="@+id/edit_account"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="账户" />
     </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout
-            android:id="@+id/inputlay_password"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:errorEnabled="true"
-            app:hintEnabled="true"
-            app:passwordToggleEnabled="true">
+        android:id="@+id/inputlay_password"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:errorEnabled="true"
+        app:hintEnabled="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/inputlay_account"
+        app:passwordToggleEnabled="true">
 
         <EditText
-                android:id="@+id/edit_password"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="密码"
-                android:inputType="textPassword"/>
+            android:id="@+id/edit_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="密码"
+            android:inputType="textPassword" />
     </android.support.design.widget.TextInputLayout>
 
     <Button
-            android:id="@+id/but_login"
-            android:layout_width="match_parent"
+        android:id="@+id/but_login"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@color/colorAccent"
+        android:text="登 录"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/inputlay_password" />
+
+
+    <TextView
+        android:id="@+id/text_register"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:clickable="true"
+        android:lineSpacingExtra="12sp"
+        android:text="新用户注册"
+        android:textColor="@color/colorClickableText"
+        android:textSize="14sp"
+        app:layout_constraintStart_toStartOf="@+id/text_other_login"
+        app:layout_constraintTop_toBottomOf="@+id/but_login" />
+
+    <TextView
+        android:id="@+id/text_forget"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="8dp"
+        android:clickable="true"
+        android:text="忘记密码？"
+        android:textColor="@color/colorClickableText"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/but_login" />
+
+    <ProgressBar
+        android:id="@+id/progress_bar_login"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:indeterminateTint="@color/colorClickableText"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/text_other_login"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/but_login" />
+    <TextView
+        android:id="@+id/text_other_login"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:gravity="center"
+        android:text="第三方登录"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_register" />
+
+    <View
+        android:id="@+id/line_other_login"
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="32dp"
+        android:background="@color/colorGreyLine"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_other_login" />
+
+    <LinearLayout
+        android:id="@+id/linear_other_login"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@+id/line_other_login"
+        tools:layout_editor_absoluteX="45dp">
+
+        <ImageView
+            android:id="@+id/img_qq"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="登录"
-            android:textSize="18sp"/>
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="1"
+            android:src="@drawable/ic_qq_128px" />
+    </LinearLayout>
 
-    <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-        <TextView
-                android:id="@+id/text_register"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_marginTop="4dp"
-                android:lineSpacingExtra="12sp"
-                android:textColor="@color/colorClickableText"
-                android:text="新用户注册"
-                android:clickable="true"
-                android:textSize="12sp"/>
-
-        <TextView
-                android:id="@+id/text_forget"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_marginTop="4dp"
-                android:text="忘记密码？"
-                android:textColor="@color/colorClickableText"
-                android:clickable="true"
-                android:textSize="12sp"/>
-    </RelativeLayout>
-
-</LinearLayout>
+</android.support.constraint.ConstraintLayout>
