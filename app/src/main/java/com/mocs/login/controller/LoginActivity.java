@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -14,6 +15,9 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.mocs.R;
 import com.mocs.main.controller.MainActivity;
 import com.tencent.connect.common.Constants;
@@ -21,22 +25,33 @@ import com.tencent.tauth.IUiListener;
 import com.tencent.tauth.Tencent;
 import com.tencent.tauth.UiError;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.IOException;
 
 import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+
 /**
  * 登录界面，已实现qq登录，登录成功后传递用户信息给MainActivity
- * qq登录回调后，显示一个loading 屏蔽该页面的输入，等待加载完毕打开MainActivity
+ * qq登录回调后，显示一个loading .等待加载完毕打开MainActivity
  * 待实现：
  * progressBar有问题 不能正常显示
- * 发送qq的openid给服务器
+ * 发送qq的openid给服务器，获取用户id和token，传给MainActivity
  * 记录登录信息，如果曾经登录过，下次再打开时直接打开MainActivity
  * 普通登录方式（太麻烦了 最后再做）
  * 2019-7-16
- * */
+ */
 public class LoginActivity extends AppCompatActivity {
     @BindView(R.id.but_login)
     Button loginButton;
@@ -50,6 +65,8 @@ public class LoginActivity extends AppCompatActivity {
     ProgressBar progressBar;
     @BindString(R.string.qq_app_id)
     String QQAppid;
+    @BindString(R.string.service_host)
+    String host;
     private Tencent mTencent;
     private IUiListener mIUiListener;
 
@@ -66,9 +83,14 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
-
     /**
      * 点击qq图标，进行登录,获取qq用户信息
+     * intent中传递的数据：
+     * id ： 服务器返回的用户id
+     * nickname ： 用户名称
+     * access_token ： 调用服务器api的token
+     * qq_openid ：用户的qq的id
+     * qq_access_token ： 调用qq的api的token
      */
     private void doQQLogin() {
         if (mTencent == null)
@@ -81,24 +103,56 @@ public class LoginActivity extends AppCompatActivity {
                     setLoadingBarVisibility(true);
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     try {
-                        String openid=((JSONObject)o).getString("openid");//获取用户标识
-                        String accessToken=((JSONObject)o).getString("access_token");//获取token，用于以后调用API
-                        intent.putExtra("qq_openid",openid);
-                        intent.putExtra("qq_access_token",accessToken);
+                        String openid = ((JSONObject) o).getString("openid");//获取用户标识
+                        String accessToken = ((JSONObject) o).getString("access_token");//获取token，用于以后调用API
+                        intent.putExtra("qq_openid", openid);
+                        intent.putExtra("qq_access_token", accessToken);
+                        // 登录自己的服务器
+                        JsonObject requestBody = new JsonObject();
+                        requestBody.addProperty("qq_openid", openid);
+                        OkHttpClient okHttpClient = new OkHttpClient();
+                        MediaType mediaType = MediaType.parse("application/json");//发送json
+                        Request request = new Request.Builder()
+                                .url(host + "/users/login/qq")
+                                .post(RequestBody.create(requestBody.toString(), mediaType))
+                                .build();
+                        okHttpClient.newCall(request).enqueue(new Callback() {
+                            @Override
+                            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                                Toast.makeText(LoginActivity.this, "登录失败,请检查网络状态", Toast.LENGTH_SHORT).show();
+                            }
+
+                            @Override
+                            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                                if (response.body()==null)
+                                    return;
+                                JsonObject jsonObject = new JsonParser().parse(response.body().string()).getAsJsonObject();
+                                int id=jsonObject.get("id").getAsInt();
+                                String nickName=jsonObject.get("nickname").getAsString();
+                                String accessToken = jsonObject.get("access_token").getAsString();
+                                intent.putExtra("id",id);
+                                intent.putExtra("nickname",nickName);
+                                intent.putExtra("access_token",accessToken);
+                                startActivity(intent);
+                                setLoadingBarVisibility(false);
+                                finish();
+                            }
+                        });
+
                     } catch (JSONException e) {
-                        Toast.makeText(LoginActivity.this,"用户信息解析错误\n"+e.getMessage(),Toast.LENGTH_SHORT).show();
+                        Toast.makeText(LoginActivity.this, "用户信息解析失败\n" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    } catch (Exception e) {
+                        Toast.makeText(LoginActivity.this, "登录失败\n" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    } finally {
                         setLoadingBarVisibility(false);
-                        return;
                     }
-                    startActivity(intent);
-                    setLoadingBarVisibility(false);
-                    finish();
+
                 }
 
                 /**登录失败*/
                 @Override
                 public void onError(UiError uiError) {
-                    Toast.makeText(LoginActivity.this, "ErrorCode:"+uiError.errorCode + "\nErrorMessage:"
+                    Toast.makeText(LoginActivity.this, "ErrorCode:" + uiError.errorCode + "\nErrorMessage:"
                             + uiError.errorMessage, Toast.LENGTH_SHORT).show();
 
                 }
@@ -114,24 +168,23 @@ public class LoginActivity extends AppCompatActivity {
             mTencent.login(this, "get_simple_userinfo", mIUiListener);
         }
     }
-    /**展示一个转圈加载，可视时屏蔽按钮点击*/
-    private void setLoadingBarVisibility(boolean visible){
-        if (visible){
-            progressBar.setVisibility(View.VISIBLE);
-            //不可点击
-            getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
 
-        }else{
+    /**
+     * 展示一个转圈加载
+     */
+    private void setLoadingBarVisibility(boolean visible) {
+        if (visible) {
+            progressBar.setVisibility(View.VISIBLE);
+        } else {
             progressBar.setVisibility(View.INVISIBLE);
-            //可点击
-            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
         }
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if (requestCode == Constants.REQUEST_LOGIN) {
             Tencent.onActivityResultData(requestCode, resultCode, data, mIUiListener);
         }
-        super.onActivityResult(requestCode,resultCode,data);
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }
