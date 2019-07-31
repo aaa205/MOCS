@@ -19,6 +19,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mocs.R;
+import com.mocs.common.bean.User;
 import com.mocs.main.controller.MainActivity;
 import com.tencent.connect.common.Constants;
 import com.tencent.tauth.IUiListener;
@@ -34,6 +35,7 @@ import java.io.IOException;
 import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.MediaType;
@@ -81,16 +83,17 @@ public class LoginActivity extends AppCompatActivity {
     private void initLogin() {
         imgQQ.setOnClickListener((v) -> doQQLogin());
     }
-
+    /**调试用 跳过登录*/
+    @OnClick(R.id.but_login)
+    public void loginDebug(){
+        Intent intent=new Intent(this,MainActivity.class);
+        startActivity(intent);
+    }
 
     /**
      * 点击qq图标，进行登录,获取qq用户信息
      * intent中传递的数据：
-     * id ： 服务器返回的用户id
-     * nickname ： 用户名称
-     * access_token ： 调用服务器api的token
-     * qq_openid ：用户的qq的id
-     * qq_access_token ： 调用qq的api的token
+     * local_user : 刚刚登陆的用户User类
      */
     private void doQQLogin() {
         if (mTencent == null)
@@ -105,8 +108,9 @@ public class LoginActivity extends AppCompatActivity {
                     try {
                         String openid = ((JSONObject) o).getString("openid");//获取用户标识
                         String accessToken = ((JSONObject) o).getString("access_token");//获取token，用于以后调用API
-                        intent.putExtra("qq_openid", openid);
-                        intent.putExtra("qq_access_token", accessToken);
+                        User user=new User();
+                        user.setQqOpenId(openid);
+                        user.setQqAccessToken(accessToken);
                         // 登录自己的服务器
                         JsonObject requestBody = new JsonObject();
                         requestBody.addProperty("qq_openid", openid);
@@ -130,9 +134,10 @@ public class LoginActivity extends AppCompatActivity {
                                 int id=jsonObject.get("id").getAsInt();
                                 String nickName=jsonObject.get("nickname").getAsString();
                                 String accessToken = jsonObject.get("access_token").getAsString();
-                                intent.putExtra("id",id);
-                                intent.putExtra("nickname",nickName);
-                                intent.putExtra("access_token",accessToken);
+                                user.setId(id);
+                                user.setNickname(nickName);
+                                user.setAccessToken(accessToken);
+                                intent.putExtra("local_user",user);//传入用户信息
                                 startActivity(intent);
                                 setLoadingBarVisibility(false);
                                 finish();

@@ -1,4 +1,4 @@
-package com.mocs.record.bean;
+package com.mocs.common.bean;
 
 import java.util.List;
 

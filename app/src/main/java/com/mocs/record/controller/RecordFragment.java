@@ -12,8 +12,8 @@ import android.view.ViewGroup;
 
 import com.mocs.R;
 import com.mocs.record.adapter.RecordAdapter;
-import com.mocs.record.bean.Record;
-import com.mocs.record.bean.RecordStep;
+import com.mocs.common.bean.Record;
+import com.mocs.common.bean.RecordStep;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -22,7 +22,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import butterknife.Unbinder;
 
 

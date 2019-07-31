@@ -11,9 +11,8 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.github.vipulasri.timelineview.TimelineView;
 import com.mocs.R;
-import com.mocs.record.bean.Record;
+import com.mocs.common.bean.Record;
 
 import net.cachapa.expandablelayout.ExpandableLayout;
 

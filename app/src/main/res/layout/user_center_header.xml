@@ -10,18 +10,18 @@
     android:paddingTop="20dp"
     android:paddingBottom="28dp">
     <!--头像-->
-    <ImageView
-        android:id="@+id/user_avatar"
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/img_user_avatar"
         android:layout_width="72dp"
         android:layout_height="72dp"
         android:layout_marginTop="30dp"
-        android:src="@mipmap/ic_launcher"/>
+        android:src="@drawable/ic_account_circle_grey_100_48dp"/>
     <!--昵称-->
     <TextView
         android:textSize="17.0sp"
         android:textColor="#ff333333"
         android:ellipsize="end"
-        android:id="@+id/user_nickname"
+        android:id="@+id/text_user_nickname"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20.0dp"
@@ -37,25 +37,24 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="7.0dp"
-        android:layout_below="@id/user_nickname"
+        android:layout_below="@id/text_user_nickname"
         android:layout_centerHorizontal="true">
+
         <TextView
-            android:id="@+id/user_uid"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="13sp"
             android:text="ID:"
-            android:textColor="#ff999999" />
+            android:textColor="#ff999999"
+            android:textSize="13sp" />
+
         <TextView
-            android:gravity="center"
-            android:id="@+id/user_progress_need_exp"
-            android:visibility="visible"
-            android:text="1231417"
+            android:id="@+id/text_user_id"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="20.0dp"
+            android:layout_marginLeft="5sp"
+            android:textColor="#ff999999"
             android:textSize="13sp"
-            android:textColor="#ff999999" />
+            android:visibility="visible" />
     </LinearLayout>
 
 </LinearLayout>

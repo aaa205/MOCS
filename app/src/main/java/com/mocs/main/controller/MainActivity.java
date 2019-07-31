@@ -1,6 +1,5 @@
 package com.mocs.main.controller;
 
-import android.net.Uri;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -22,7 +21,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity implements BottomNavigationBar.OnTabSelectedListener,
-        ViewPager.OnPageChangeListener,  MyFragment.OnFragmentInteractionListener {
+        ViewPager.OnPageChangeListener {
     @BindView(R.id.bottomBar)
     BottomNavigationBar bottomNavigationBar;
     @BindView(R.id.viewPager)
@@ -45,12 +44,11 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationB
         mAdapter.mList.add(HomeFragment.newInstance());
         mAdapter.mList.add(RecordFragment.newInstance());
         mAdapter.mList.add(MessageFragment.newInstance());
-        mAdapter.mList.add(MyFragment.newInstance(null, null));
+        mAdapter.mList.add(MyFragment.newInstance());
         mPager.setAdapter(mAdapter);//将fragment装入viewpager
         mPager.setCurrentItem(0);//设置默认页面，要接在setAdapter后
         mPager.addOnPageChangeListener(this);//监听器
-        mPager.setOffscreenPageLimit(3);//缓存半径
-
+        mPager.setOffscreenPageLimit(4);//缓存半径
     }
 
     //初始化导航栏
@@ -98,10 +96,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationB
 
     }
 
-    @Override
-    public void onFragmentInteraction(Uri uri) {
 
-    }
 
 
     public static class MyAdapter extends FragmentPagerAdapter {

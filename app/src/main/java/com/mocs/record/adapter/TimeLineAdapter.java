@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import com.github.vipulasri.timelineview.TimelineView;
 import com.mocs.R;
-import com.mocs.record.bean.RecordStep;
+import com.mocs.common.bean.RecordStep;
 
 import java.util.List;
 

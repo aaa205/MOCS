@@ -1,114 +1,88 @@
 package com.mocs.my.controller;
 
-import android.content.Context;
-import android.net.Uri;
+
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.mocs.R;
+import com.mocs.common.base.BaseLazyFragment;
+import com.mocs.common.bean.User;
+import com.mocs.main.model.UserModel;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link MyFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link MyFragment#newInstance} factory method to
- * create an instance of this fragment.
  * “我的”界面
  */
-public class MyFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+public class MyFragment extends BaseLazyFragment {
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    private OnFragmentInteractionListener mListener;
-
-    public MyFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment MyFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static MyFragment newInstance(String param1, String param2) {
+    @BindView(R.id.img_user_avatar)
+    CircleImageView imgAvatar;
+    @BindView(R.id.text_user_id)
+    TextView textId;
+    @BindView(R.id.text_user_nickname)
+    TextView textNickname;
+    private Unbinder unbinder;
+    private User mLocalUser;//当前登陆用户
+    private UserModel mUserModel;
+    public static MyFragment newInstance() {
         MyFragment fragment = new MyFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
+        fragment.mUserModel=new UserModel();
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+        mLocalUser=(User) getActivity().getIntent().getSerializableExtra("local_user");
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-
-        return inflater.inflate(R.layout.fragment_my, container, false);
-    }
-
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
+        View rootView= inflater.inflate(R.layout.fragment_my, container, false);
+        unbinder= ButterKnife.bind(this,rootView);
+        super.onCreateView(inflater, container, savedInstanceState);
+        return rootView;
     }
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
+    protected void loadData() {
+        textId.setText(String.valueOf(mLocalUser.getId()));
+        textNickname.setText(mLocalUser.getNickname());
+        new MyAsynTask().execute();//加载qq信息
     }
 
     @Override
-    public void onDetach() {
-        super.onDetach();
-
-        mListener = null;
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+    /**执行耗时操作,加载头像*/
+ private class MyAsynTask extends AsyncTask<Void,Integer,User>{
+
+     @Override
+     protected User doInBackground(Void... voids) {
+         mUserModel.getQQUserInfo(mLocalUser);//加载头像
+         return mLocalUser;
+     }
+
+        @Override
+        protected void onPostExecute(User user) {
+            Glide.with(MyFragment.this)
+                    .load(user.getAvatarImageUrl())
+                    .into(imgAvatar);
+        }
     }
 }
+

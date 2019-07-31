@@ -1,4 +1,4 @@
-package com.mocs.record.bean;
+package com.mocs.common.bean;
 
 /**时间线中的每一步*/
 public class RecordStep {

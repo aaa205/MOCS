@@ -8,71 +8,59 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.mocs.R;
+import com.mocs.common.base.BaseLazyFragment;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 /**
- *实现了懒加载,首页碎片
+ * 实现了懒加载,首页碎片
  */
-public class HomeFragment extends Fragment {
+public class HomeFragment extends BaseLazyFragment {
     private View rootView;
-    private boolean isLoaded;//数据是否已加载
-    private boolean isViewPrepared;//UI是否已准备好
+    private Unbinder mUnbinder;
+    @BindView(R.id.textView_home)
+    TextView textView;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        rootView=inflater.inflate(R.layout.fragment_home,container,false);
-        isViewPrepared =true;//UI准备好了
-        lazyLoad();
+        rootView = inflater.inflate(R.layout.fragment_home, container, false);
+        mUnbinder = ButterKnife.bind(this, rootView);
+        super.onCreateView(inflater, container, savedInstanceState);//一定要先加载自己的layout再调用父类的方法,才能实现懒加载
         return rootView;
     }
-    //懒加载
-    protected void lazyLoad(){
-        //当前对用户可见，UI已准备好，未加载数据时，加载数据
-        Log.d("Lazy","run lazyLoad");
-        if (getUserVisibleHint()&& isViewPrepared &&!isLoaded){
-            Log.d("Lazy","lazy ok");
-            loadData();
-        }
-    }
-    //加载数据
-    private void loadData(){
-        new Thread(){
-            @Override
-            public void run() {
-                try {
-                    Log.d("Lazy","load data");
-                    Thread.sleep(300);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }.start();
-    }
 
+    /**
+     * 加载数据放在这里可以实现懒加载
+     */
     @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-        if (isVisibleToUser){
-            lazyLoad();
-        }
+    protected void loadData() {
+
+        new Thread(() -> {
+            try {
+                Thread.sleep(2000);
+                Log.d("Lazy", "load data");
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }).start();
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        isLoaded=false;
-        isViewPrepared=false;
+        mUnbinder.unbind();
     }
 
-    public HomeFragment() {
-        isLoaded =false;//未加载数据
-        isViewPrepared =false;
-    }
-
-    public static HomeFragment newInstance(){
+    public static HomeFragment newInstance() {
         return new HomeFragment();
     }
 
 }
+
+
