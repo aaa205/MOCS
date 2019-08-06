@@ -40,7 +40,7 @@ public class TimeLineAdapter extends RecyclerView.Adapter<TimeLineAdapter.ViewHo
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
         RecordStep recordStep=mRecordStepList.get(i);
         viewHolder.report_text.setText(recordStep.getReportText());
-        viewHolder.time_text.setText(recordStep.getTime());
+        viewHolder.time_text.setText(String.valueOf(recordStep.getTime()));
 
     }
 

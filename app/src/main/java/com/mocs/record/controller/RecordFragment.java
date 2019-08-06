@@ -3,7 +3,6 @@ package com.mocs.record.controller;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -11,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.mocs.R;
+import com.mocs.common.base.BaseLazyFragment;
 import com.mocs.record.adapter.RecordAdapter;
 import com.mocs.common.bean.Record;
 import com.mocs.common.bean.RecordStep;
@@ -23,10 +23,16 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+/**
+ * 修改了布局 使用CardView来展示
+ * 待完成：
+ * 下拉刷新
+ * 按日期排序
+ * 2019-8-6
+ */
 
-
-public class RecordFragment extends Fragment {
-    private Unbinder unbinder;
+public class RecordFragment extends BaseLazyFragment {
+    private Unbinder mUnbinder;
     @BindView(R.id.recyclerView_record)
     RecyclerView recyclerView;
     @BindView(R.id.add_button_record)
@@ -50,26 +56,30 @@ public class RecordFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView= inflater.inflate(R.layout.fragment_record, container, false);
-        unbinder= ButterKnife.bind(this,rootView);
-        initView();
+        mUnbinder = ButterKnife.bind(this,rootView);
+        super.onCreateView(inflater, container, savedInstanceState);//这句一定要有 才能调用loadData()
         return rootView;
     }
+
+    @Override
+    protected void loadData() {
+        initView();
+    }
+
     /**test*/
     private void initRecordList(){
-        SimpleDateFormat sdf=new SimpleDateFormat();
-        sdf.applyPattern("MM-dd HH:mm");
         StringBuilder stringBuilder=new StringBuilder("description ");
         List<RecordStep> steps=new ArrayList<>();
         for (int i=0;i<6;i++){
             RecordStep recordStep=new RecordStep();
-            recordStep.setTime(sdf.format(new Date()));
+            recordStep.setTime(System.currentTimeMillis());
             recordStep.setReportText("step "+1);
             steps.add(recordStep);
         }
         for(int i=0;i<10;i++){
             Record record=new Record();
             stringBuilder.append("description");
-            record.setTime(sdf.format(new Date()));
+            record.setTime(System.currentTimeMillis());
             record.setType("TYPE0-TEST");
             record.setDescription(stringBuilder.toString());
             record.setRecordStepList(steps);
@@ -79,11 +89,11 @@ public class RecordFragment extends Fragment {
     private void initView(){
         LinearLayoutManager layoutManager=new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
-        RecordAdapter adapter=new RecordAdapter(getContext(),mRecordList);
+        RecordAdapter adapter=new RecordAdapter(mRecordList);
         recyclerView.setAdapter(adapter);
         /**临时*/
         floatingButton.setOnClickListener((v)->{
-            Intent intent=new Intent(getContext(),MapActivity.class);
+            Intent intent=new Intent(getContext(),FormActivity.class);
             startActivity(intent);
         });
     }
@@ -91,7 +101,7 @@ public class RecordFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        unbinder.unbind();
+        mUnbinder.unbind();
     }
 
 }

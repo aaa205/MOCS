@@ -6,17 +6,17 @@ import java.util.List;
  * 记录每个提交的问题的信息
  */
 public class Record {
-    private long recordId;
-    private String time;
+    private int recordId;
+    private long time;
     private String type;
     private String description;
     private List<RecordStep> recordStepList;
 
-    public String getTime() {
+    public long getTime() {
         return time;
     }
 
-    public void setTime(String time) {
+    public void setTime(long time) {
         this.time = time;
     }
 
@@ -48,7 +48,7 @@ public class Record {
         return recordId;
     }
 
-    public void setRecordId(long recordId) {
+    public void setRecordId(int recordId) {
         this.recordId = recordId;
     }
 }

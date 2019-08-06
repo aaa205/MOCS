@@ -128,9 +128,13 @@ public class LoginActivity extends AppCompatActivity {
 
                             @Override
                             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                                if (response.body()==null)
-                                    return;
                                 JsonObject jsonObject = new JsonParser().parse(response.body().string()).getAsJsonObject();
+                                //检查是否登录成功
+                                int status =jsonObject.get("status").getAsInt();
+                                if(status!=200){
+                                    Toast.makeText(LoginActivity.this,"登录失败，请稍后重试",Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
                                 int id=jsonObject.get("id").getAsInt();
                                 String nickName=jsonObject.get("nickname").getAsString();
                                 String accessToken = jsonObject.get("access_token").getAsString();

@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.mocs.R;
 import com.mocs.common.base.BaseLazyFragment;
 import com.mocs.common.bean.User;
@@ -31,7 +30,7 @@ public class MyFragment extends BaseLazyFragment {
     TextView textId;
     @BindView(R.id.text_user_nickname)
     TextView textNickname;
-    private Unbinder unbinder;
+    private Unbinder mUnbinder;
     private User mLocalUser;//当前登陆用户
     private UserModel mUserModel;
     public static MyFragment newInstance() {
@@ -50,7 +49,7 @@ public class MyFragment extends BaseLazyFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView= inflater.inflate(R.layout.fragment_my, container, false);
-        unbinder= ButterKnife.bind(this,rootView);
+        mUnbinder = ButterKnife.bind(this,rootView);
         super.onCreateView(inflater, container, savedInstanceState);
         return rootView;
     }
@@ -65,7 +64,7 @@ public class MyFragment extends BaseLazyFragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        unbinder.unbind();
+        mUnbinder.unbind();
     }
 
     /**执行耗时操作,加载头像*/

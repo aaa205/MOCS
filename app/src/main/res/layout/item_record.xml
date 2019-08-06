@@ -1,83 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/item_record"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="3sp"
-    android:orientation="vertical">
+    android:layout_marginBottom="2sp"
+    android:foreground="?attr/selectableItemBackground"
+    android:clickable="true"
+    android:orientation="vertical"
+    app:contentPadding="6dp"
+    app:cardUseCompatPadding="true"
+    app:cardElevation="3dp">
 
-    <LinearLayout
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="5sp"
-        android:orientation="vertical">
+        android:layout_height="wrap_content">
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/type_record"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/type_record"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="2"
-                android:paddingTop="5sp"
-                android:text="11"
-                android:textColor="@color/colorPageTitle"
-                android:textSize="18sp" />
-
-            <TextView
-                android:id="@+id/time_record"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="5sp"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:maxLines="1"
-                android:paddingTop="4sp"
-                android:text="222"
-                android:textColor="@color/colorPageTitle"
-                android:textSize="18sp" />
-
-            <ImageButton
-                android:id="@+id/expand_button_record"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="right"
-                android:background="#F9F9F9"
-                android:paddingRight="2sp"
-                android:src="@drawable/ic_keyboard_arrow_down_grey_400_36dp" />
-        </LinearLayout>
+            android:layout_marginBottom="4dp"
+            android:text="11111"
+            android:textColor="@color/colorPageTitle"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toTopOf="@+id/description_record"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0"
+            app:layout_constraintVertical_chainStyle="packed" />
 
         <TextView
             android:id="@+id/description_record"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:maxLines="3"
-            android:text="333" />
+            android:maxLines="4"
+            android:text="333333333333333333333333333333\n333333333"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/type_record" />
 
-        <net.cachapa.expandablelayout.ExpandableLayout
-            android:id="@+id/expandableLayout_record"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/last_step_record"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:maxLines="2"
+            android:text="aaa"
+            android:textColor="#4CAF50"
+            app:layout_constraintBottom_toTopOf="@+id/time_record"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/description_record" />
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/timeline_recyclerView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="@dimen/fixed_width_padding"
-                tools:listitem="@layout/item_timeline" />
+        <TextView
+            android:id="@+id/time_record"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="3dp"
+            android:gravity="end"
+            android:maxLines="1"
+            android:paddingTop="4sp"
+            android:text="222222222222"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/description_record"
+            app:layout_constraintVertical_bias="1.0" />
 
-        </net.cachapa.expandablelayout.ExpandableLayout>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1px"
-            android:layout_marginTop="3sp"
-            android:background="@color/colorGreyLine"></View>
-    </LinearLayout>
+    </android.support.constraint.ConstraintLayout>
 
 
-</FrameLayout>
+</android.support.v7.widget.CardView>

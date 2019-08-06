@@ -5,28 +5,28 @@
     android:id="@+id/message_fragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".message.controller.MessageFragment">
+    tools:context="com.mocs.message.controller.MessageFragment">
 
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        app:elevation="0dp">
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/message_toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/colorPrimary"
+            android:elevation="0dp"
             android:titleTextColor="@color/colorPageTitle"
-            app:title="通知">
-
-        </android.support.v7.widget.Toolbar>
+            app:title="通知"></android.support.v7.widget.Toolbar>
     </android.support.design.widget.AppBarLayout>
 
     <com.scwang.smartrefresh.layout.SmartRefreshLayout
         android:id="@+id/message_refresh"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <com.scwang.smartrefresh.layout.header.ClassicsHeader
