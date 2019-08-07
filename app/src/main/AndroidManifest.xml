@@ -28,15 +28,18 @@
             android:name="org.apache.http.legacy"
             android:required="false" />
 
-        <activity android:name=".login.controller.LoginActivity">
+        <activity android:name=".login.controller.LoginActivity"
+            android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".main.controller.MainActivity" />
-        <activity android:name=".record.controller.MapActivity" />
+        <activity android:name=".main.controller.MainActivity"
+            android:launchMode="singleTask"/>
+        <activity android:name=".record.controller.MapActivity"
+            android:launchMode="singleTask"/>
 
         <service android:name="com.amap.api.location.APSService" /> <!-- qq互联sdk的配置 https://wiki.open.qq.com/wiki/创建并配置工程 -->
         <activity

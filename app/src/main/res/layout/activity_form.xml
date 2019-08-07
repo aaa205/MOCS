@@ -1,93 +1,135 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".record.controller.FormActivity">
 
     <Toolbar
         android:id="@+id/toolbar_form"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?attr/colorPrimary"
         android:minHeight="?attr/actionBarSize"
         android:navigationIcon="@drawable/ic_arrow_back_black_24dp"
         android:theme="?attr/actionBarTheme"
-        android:title="提交表单"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:title="提交表单" />
 
 
-    <android.support.v7.widget.GridLayout
-        android:layout_width="0dp"
+    <EditText
+        android:id="@+id/edit_description"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="4dp"
-        app:columnCount="7"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar_form"
-        app:orientation="horizontal"
-        app:rowCount="5">
-        <!--row0-->
-        <TextView
-            android:layout_marginRight="16dp"
-            android:gravity="center_vertical"
-            android:text="类型"
-            android:textColor="@color/colorPageTitle"
-            android:textSize="18sp"
-            app:layout_columnSpan="3"
-            app:layout_gravity="fill" />
+        android:layout_marginTop="12dp"
+        android:layout_marginHorizontal="8dp"
+        android:background="@null"
+        android:gravity="top|left"
+        android:hint="关于意见的描述，限制100字以内"
+        android:lines="6"
+        android:textSize="18sp" />
 
-        <EditText
-            android:id="@+id/edit_type"
-            android:layout_marginBottom="8dp"
-            android:hint="点击选择"
-            android:focusable="false"
-            android:editable="false"
-            app:layout_columnSpan="4"
-            app:layout_gravity="fill" />
+    <LinearLayout
+        android:id="@+id/layout_type"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?android:attr/selectableItemBackground"
+        android:clickable="true"
+        android:orientation="vertical">
 
-        <!--row1-->
-        <TextView
-            android:layout_marginRight="16dp"
-            android:gravity="center_vertical"
-            android:text="位置"
-            android:textColor="@color/colorPageTitle"
-            android:textSize="18sp"
-            app:layout_columnSpan="3"
-            app:layout_gravity="fill" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="@color/colorGreyLine" />
 
-        <EditText
-            android:id="@+id/edit_location"
-            android:hint="点击选择"
-            android:focusable="false"
-            android:editable="false"
-            app:layout_columnSpan="4"
-            app:layout_gravity="fill" />
-        <!--row2-->
-        <TextView
-            android:layout_marginRight="16dp"
-            android:gravity="center_vertical"
-            android:text="说明"
-            android:textColor="@color/colorPageTitle"
-            android:textSize="18sp"
-            app:layout_columnSpan="3"
-            app:layout_gravity="fill" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="8dp"
+            android:layout_marginVertical="16dp"
+            android:orientation="horizontal">
 
-        <EditText
-            android:id="@+id/edit_description"
-            android:hint="字数限制100"
-            android:maxLines="4"
-            android:lines="2"
-            android:maxLength="100"
-            app:layout_columnSpan="4"
-            app:layout_gravity="fill" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="32dp"
+                android:text="类型"
+                android:textColor="@color/colorPageTitle"
+                android:textSize="18sp" />
 
-    </android.support.v7.widget.GridLayout>
+            <TextView
+                android:id="@+id/text_type"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="未选择"
+                android:textSize="18sp" />
+        </LinearLayout>
 
-</android.support.constraint.ConstraintLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_address"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?android:attr/selectableItemBackground"
+        android:clickable="true"
+        android:orientation="vertical">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="@color/colorGreyLine" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="8dp"
+            android:layout_marginVertical="16dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="32dp"
+                android:text="地址"
+                android:textColor="@color/colorPageTitle"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/text_address"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="未选择"
+                android:textSize="18sp" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="@color/colorGreyLine" />
+    </LinearLayout>
+
+    <GridView
+        android:id="@+id/form_grid"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="2dp"
+        android:layout_marginTop="16dp"
+        android:layout_weight="0"
+        android:horizontalSpacing="2dp"
+        android:numColumns="3"
+        android:verticalSpacing="4dp"></GridView>
+
+    <Button
+        android:id="@+id/but_submit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:layout_marginHorizontal="8dp"
+        android:background="@color/colorAccent"
+        android:text="提 交"
+        android:textColor="@color/white"
+        android:textSize="18sp" />
+
+</LinearLayout>

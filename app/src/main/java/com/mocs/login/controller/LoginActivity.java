@@ -141,7 +141,7 @@ public class LoginActivity extends AppCompatActivity {
                                 user.setId(id);
                                 user.setNickname(nickName);
                                 user.setAccessToken(accessToken);
-                                intent.putExtra("local_user",user);//传入用户信息
+                                intent.putExtra("local_user",user);//传入用户类
                                 startActivity(intent);
                                 setLoadingBarVisibility(false);
                                 finish();
