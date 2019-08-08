@@ -91,7 +91,6 @@ public class RecordFragment extends BaseLazyFragment {
         recyclerView.setLayoutManager(layoutManager);
         RecordAdapter adapter=new RecordAdapter(mRecordList);
         recyclerView.setAdapter(adapter);
-        /**临时*/
         floatingButton.setOnClickListener((v)->{
             Intent intent=new Intent(getContext(),FormActivity.class);
             startActivity(intent);

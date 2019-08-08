@@ -71,7 +71,7 @@ public class LoginActivity extends AppCompatActivity {
     String host;
     private Tencent mTencent;
     private IUiListener mIUiListener;
-
+    private static  final int ENTER_MAIN=11;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -142,9 +142,8 @@ public class LoginActivity extends AppCompatActivity {
                                 user.setNickname(nickName);
                                 user.setAccessToken(accessToken);
                                 intent.putExtra("local_user",user);//传入用户类
-                                startActivity(intent);
+                                startActivityForResult(intent,ENTER_MAIN);//进入MainActivity后关闭
                                 setLoadingBarVisibility(false);
-                                finish();
                             }
                         });
 
@@ -191,9 +190,15 @@ public class LoginActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if (requestCode == Constants.REQUEST_LOGIN) {
-            Tencent.onActivityResultData(requestCode, resultCode, data, mIUiListener);
+        if (resultCode==RESULT_OK){
+            switch (requestCode){
+                case Constants.REQUEST_LOGIN:
+                    Tencent.onActivityResultData(requestCode, resultCode, data, mIUiListener);
+                    break;
+                case ENTER_MAIN:
+                    finish();
+                    break;
+            }
         }
-        super.onActivityResult(requestCode, resultCode, data);
     }
 }

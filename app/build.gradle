@@ -57,6 +57,6 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     implementation files('libs/open_sdk_r6019_lite.jar')
     implementation 'com.squareup.okhttp3:okhttp:4.0.1'
-    implementation 'com.android.support:gridlayout-v7:28.0.0'
-
+    implementation 'com.bilibili:boxing-impl:1.0.4'
+    implementation 'com.chensl.rotatephotoview:rotatephotoview:1.0.5'
 }

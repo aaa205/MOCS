@@ -28,6 +28,8 @@
         android:gravity="top|left"
         android:hint="关于意见的描述，限制100字以内"
         android:lines="6"
+        android:maxLines="6"
+        android:maxLength="100"
         android:textSize="18sp" />
 
     <LinearLayout
@@ -114,19 +116,19 @@
         android:id="@+id/form_grid"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="2dp"
-        android:layout_marginTop="16dp"
+        android:listSelector="@android:color/transparent"
+        android:layout_marginLeft="12dp"
+        android:layout_marginTop="20dp"
         android:layout_weight="0"
-        android:horizontalSpacing="2dp"
         android:numColumns="3"
-        android:verticalSpacing="4dp"></GridView>
+        android:horizontalSpacing="3dp"></GridView>
 
     <Button
         android:id="@+id/but_submit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
-        android:layout_marginHorizontal="8dp"
+        android:layout_marginHorizontal="10dp"
         android:background="@color/colorAccent"
         android:text="提 交"
         android:textColor="@color/white"

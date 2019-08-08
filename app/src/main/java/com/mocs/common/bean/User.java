@@ -1,6 +1,9 @@
 package com.mocs.common.bean;
 
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.io.Serializable;
 
 /**
@@ -10,7 +13,7 @@ import java.io.Serializable;
  * qqOpenId ：用户的qq的id
  * qqAccessToken ： 调用qq的api的token
  */
-public class User implements Serializable {
+public class User implements Parcelable {
     private String nickname;
     private int id;
     private String qqOpenId;
@@ -25,6 +28,42 @@ public class User implements Serializable {
         accessToken="";
         avatarImageUrl ="";
     }
+    protected User(Parcel in) {
+        nickname = in.readString();
+        id = in.readInt();
+        qqOpenId = in.readString();
+        qqAccessToken = in.readString();
+        accessToken = in.readString();
+        avatarImageUrl = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(nickname);
+        dest.writeInt(id);
+        dest.writeString(qqOpenId);
+        dest.writeString(qqAccessToken);
+        dest.writeString(accessToken);
+        dest.writeString(avatarImageUrl);
+    }
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<User> CREATOR = new Creator<User>() {
+        @Override
+        public User createFromParcel(Parcel in) {
+            return new User(in);
+        }
+
+        @Override
+        public User[] newArray(int size) {
+            return new User[size];
+        }
+    };
 
     public String getAvatarImageUrl() {
         return avatarImageUrl;
@@ -73,4 +112,5 @@ public class User implements Serializable {
     public void setQqOpenId(String qqOpenId) {
         this.qqOpenId = qqOpenId;
     }
+
 }
