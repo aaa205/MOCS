@@ -1,6 +1,7 @@
 package com.mocs.record.controller;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
@@ -8,9 +9,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.widget.Toast;
 import android.widget.Toolbar;
 
 import com.amap.api.location.AMapLocation;
@@ -27,6 +26,7 @@ import com.amap.api.maps2d.model.BitmapDescriptorFactory;
 
 import com.amap.api.maps2d.model.MyLocationStyle;
 import com.mocs.R;
+import com.mocs.common.bean.LocationInfo;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -40,6 +40,7 @@ public class MapActivity extends AppCompatActivity implements LocationSource, AM
     private OnLocationChangedListener mListener;
     private AMapLocationClient mLocationClient;
     private AMapLocationClientOption mLocationOption;
+    private AMapLocation mLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,9 +49,48 @@ public class MapActivity extends AppCompatActivity implements LocationSource, AM
         ButterKnife.bind(this);
         checkPermission();
         mMapView.onCreate(savedInstanceState);
-        toolbar.inflateMenu(R.menu.menu_map);
+        initView();
     }
 
+    private void initView() {
+        toolbar.inflateMenu(R.menu.menu_map);
+        toolbar.setOnMenuItemClickListener(menuItem -> {
+            switch (menuItem.getItemId()) {
+                case R.id.commit_map:
+                    if (mLocation!=null){
+                        //定位成功
+                        if (mLocation.getErrorCode()==0){
+                            Intent intent=new Intent();
+                            intent.putExtra("location_info",createLocationInfo());
+                            setResult(RESULT_OK,intent);
+                            finish();
+                        }else{
+                            Toast.makeText(this,mLocation.getErrorInfo(),Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                    return true;
+            }
+            return false;
+        });
+        toolbar.setNavigationOnClickListener((v) -> finish());
+    }
+
+    /**
+     * 根据创建 AMapLocation 创建Bean
+     * @return bean中自定义的LocationInfo类，存储地址信息
+     */
+    private LocationInfo createLocationInfo(){
+        LocationInfo info=new LocationInfo();
+        info.setAddress(mLocation.getAddress());
+        info.setCity(mLocation.getCity());
+        info.setCountry(mLocation.getCountry());
+        info.setDistrict(mLocation.getDistrict());
+        info.setStreet(mLocation.getStreet());
+        info.setStreetNum(mLocation.getStreetNum());
+        info.setLatitude(mLocation.getLatitude());
+        info.setLongitude(mLocation.getLongitude());
+        return info;
+    }
     /**
      * 初始化AMap对象
      */
@@ -62,7 +102,7 @@ public class MapActivity extends AppCompatActivity implements LocationSource, AM
     }
 
     /**
-     * 设置一些amap的属性
+     * 设置amap的属性
      */
     private void setUpMap() {
         //设置定位蓝点
@@ -79,42 +119,31 @@ public class MapActivity extends AppCompatActivity implements LocationSource, AM
         aMap.getUiSettings().setMyLocationButtonEnabled(true);// 设置默认定位按钮是否显示
         aMap.setMyLocationEnabled(true);// 设置为true表示显示定位层并可触发定位，false表示隐藏定位层并不可触发定位，默认是false
     }
-    /**检查并申请权限*/
+
+
+    /**
+     * 检查并申请权限
+     */
     private void checkPermission() {
         if (PackageManager.PERMISSION_GRANTED != ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_COARSE_LOCATION)) {
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 0);
-        }else
+        } else
             initMap();
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        switch (requestCode){
-            case 0:{
-                if (grantResults.length>0&&grantResults[0]==PackageManager.PERMISSION_GRANTED){
+        switch (requestCode) {
+            case 0: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     initMap();
                 }
             }
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-       // getMenuInflater().inflate(R.menu.menu_map,menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
-            case R.id.confirm_map:
-                //todo
-                break;
-        }
-        return true;
-    }
 
     @Override
     protected void onDestroy() {
@@ -143,13 +172,10 @@ public class MapActivity extends AppCompatActivity implements LocationSource, AM
     @Override
     public void onLocationChanged(AMapLocation aMapLocation) {
         if (mListener != null && aMapLocation != null) {
-            if (aMapLocation != null
-                    && aMapLocation.getErrorCode() == 0) {
+            if (aMapLocation != null && aMapLocation.getErrorCode() == 0) {
                 mListener.onLocationChanged(aMapLocation);// 显示系统小蓝点
-            } else {
-                String errText = "定位失败," + aMapLocation.getErrorCode() + ": " + aMapLocation.getErrorInfo();
-                Log.e("AmapErr", errText);
             }
+            mLocation = aMapLocation;//引用该对象，在用户点击√提交时再解析
         }
     }
 
@@ -161,14 +187,15 @@ public class MapActivity extends AppCompatActivity implements LocationSource, AM
             mLocationOption = new AMapLocationClientOption();
             //设置定位监听
             mLocationClient.setLocationListener(this);
+            //设置需要地址信息
+            mLocationOption.setNeedAddress(true);
             //设置为高精度定位模式
             mLocationOption.setLocationMode(AMapLocationClientOption.AMapLocationMode.Hight_Accuracy);
+            //设置定位间隔,单位毫秒
+            mLocationOption.setInterval(2000);
             //设置定位参数
             mLocationClient.setLocationOption(mLocationOption);
             // 此方法为每隔固定时间会发起一次定位请求，为了减少电量消耗或网络流量消耗，
-            // 注意设置合适的定位时间的间隔（最小间隔支持为2000ms），并且在合适时间调用stopLocation()方法来取消定位请求
-            // 在定位结束后，在合适的生命周期调用onDestroy()方法
-            // 在单次定位情况下，定位无论成功与否，都无需调用stopLocation()方法移除请求，定位sdk内部会移除
             mLocationClient.startLocation();
         }
     }

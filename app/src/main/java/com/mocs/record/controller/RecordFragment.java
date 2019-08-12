@@ -15,9 +15,7 @@ import com.mocs.record.adapter.RecordAdapter;
 import com.mocs.common.bean.Record;
 import com.mocs.common.bean.RecordStep;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
@@ -47,6 +45,7 @@ public class RecordFragment extends BaseLazyFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         /**test*/
         initRecordList();
 

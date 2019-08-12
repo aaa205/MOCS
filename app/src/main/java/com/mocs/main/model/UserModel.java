@@ -59,27 +59,3 @@ public class UserModel {
         }
     }
 }
-
-/**
- * call.enqueue(new Callback() {
- *
- * @Override public void onFailure(@NotNull Call call, @NotNull IOException e) {
- * Log.d("Network Error","onFailure: getQQUserInfo");
- * }
- * @Override public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
- * JsonObject body=new JsonParser().parse(response.body().string()).getAsJsonObject();
- * int ret=body.get("ret").getAsInt();//获取返回码
- * if (ret!=0){
- * //错误返回处理
- * String msg=body.get("msg").getAsString();
- * mListener.onGetQQInfoError(msg);
- * }else{
- * //正确返回处理
- * String url=body.get("figureurl_qq_2").getAsString();//获取px100*100的qq头像url
- * user.setAvatarImageUrl(url);
- * mListener.onGetQQInfoSuccess(user);
- * }
- * <p>
- * }
- * });
- */
