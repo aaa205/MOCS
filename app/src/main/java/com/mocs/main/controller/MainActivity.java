@@ -10,6 +10,7 @@ import android.os.Bundle;
 import com.ashokvarma.bottomnavigation.BottomNavigationBar;
 import com.ashokvarma.bottomnavigation.BottomNavigationItem;
 import com.mocs.R;
+import com.mocs.common.bean.User;
 import com.mocs.home.controller.HomeFragment;
 import com.mocs.message.controller.MessageFragment;
 import com.mocs.my.controller.MyFragment;
@@ -28,12 +29,13 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationB
     ViewPager mPager;
     private static int NUM_ITEMS = 4;//底部导航栏item数
     private MyAdapter mAdapter;
-
+    private User mLocalUser;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);//绑定视图
+        mLocalUser=getIntent().getParcelableExtra("local_user");
         init();
     }
 
@@ -42,9 +44,9 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationB
         initNavigationBar();
         mAdapter = new MyAdapter(getSupportFragmentManager());
         mAdapter.mList.add(HomeFragment.newInstance());
-        mAdapter.mList.add(RecordFragment.newInstance());
+        mAdapter.mList.add(RecordFragment.newInstance(mLocalUser));
         mAdapter.mList.add(MessageFragment.newInstance());
-        mAdapter.mList.add(MyFragment.newInstance());
+        mAdapter.mList.add(MyFragment.newInstance(mLocalUser));
         mPager.setAdapter(mAdapter);//将fragment装入viewpager
         mPager.setCurrentItem(0);//设置默认页面，要接在setAdapter后
         mPager.addOnPageChangeListener(this);//监听器

@@ -1,30 +1,25 @@
 package com.mocs.common.bean;
 
-import java.util.List;
-
-/**
- * 记录每个提交的问题的信息
- */
 public class Record {
-    private int recordId;
-    private long time;
-    private String type;
+
+    private long createdTime;//创建时间
+    private int userId;
+    private int type;
     private String description;
-    private List<RecordStep> recordStepList;
 
-    public long getTime() {
-        return time;
+    public long getCreatedTime() {
+        return createdTime;
     }
 
-    public void setTime(long time) {
-        this.time = time;
+    public void setCreatedTime(long createdTime) {
+        this.createdTime = createdTime;
     }
 
-    public String getType() {
+    public int getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(int type) {
         this.type = type;
     }
 
@@ -36,19 +31,11 @@ public class Record {
         this.description = description;
     }
 
-    public List<RecordStep> getRecordStepList() {
-        return recordStepList;
+    public int getUserId() {
+        return userId;
     }
 
-    public void setRecordStepList(List<RecordStep> recordStepList) {
-        this.recordStepList = recordStepList;
-    }
-
-    public long getRecordId() {
-        return recordId;
-    }
-
-    public void setRecordId(int recordId) {
-        this.recordId = recordId;
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 }

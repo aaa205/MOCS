@@ -3,7 +3,14 @@ package com.mocs.common.bean;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class LocationInfo implements Parcelable {
+/**
+ * 存储FormActivity中填写的数据,不包含选择的图片，用于向服务器发送创建Record
+ */
+public class RecordForm implements Parcelable {
+    private long createdTime;//创建时间
+    private int userId;
+    private int type;
+    private String description;
     private double latitude;
     private double longitude;
     private String address;
@@ -11,10 +18,16 @@ public class LocationInfo implements Parcelable {
     private String city;
     private String district;
     private String street;
-    private String streetNum;
 
-    public LocationInfo(){}
-    protected LocationInfo(Parcel in) {
+    public RecordForm() {
+    }
+
+
+    protected RecordForm(Parcel in) {
+        createdTime = in.readLong();
+        userId = in.readInt();
+        type = in.readInt();
+        description = in.readString();
         latitude = in.readDouble();
         longitude = in.readDouble();
         address = in.readString();
@@ -27,6 +40,10 @@ public class LocationInfo implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(createdTime);
+        dest.writeInt(userId);
+        dest.writeInt(type);
+        dest.writeString(description);
         dest.writeDouble(latitude);
         dest.writeDouble(longitude);
         dest.writeString(address);
@@ -42,15 +59,15 @@ public class LocationInfo implements Parcelable {
         return 0;
     }
 
-    public static final Creator<LocationInfo> CREATOR = new Creator<LocationInfo>() {
+    public static final Creator<RecordForm> CREATOR = new Creator<RecordForm>() {
         @Override
-        public LocationInfo createFromParcel(Parcel in) {
-            return new LocationInfo(in);
+        public RecordForm createFromParcel(Parcel in) {
+            return new RecordForm(in);
         }
 
         @Override
-        public LocationInfo[] newArray(int size) {
-            return new LocationInfo[size];
+        public RecordForm[] newArray(int size) {
+            return new RecordForm[size];
         }
     };
 
@@ -118,17 +135,37 @@ public class LocationInfo implements Parcelable {
         this.streetNum = streetNum;
     }
 
-    @Override
-    public String toString() {
-        return "LocationInfo{" +
-                "latitude=" + latitude +
-                ", longitude=" + longitude +
-                ", address='" + address + '\'' +
-                ", country='" + country + '\'' +
-                ", city='" + city + '\'' +
-                ", district='" + district + '\'' +
-                ", street='" + street + '\'' +
-                ", streetNum='" + streetNum + '\'' +
-                '}';
+    private String streetNum;
+
+    public long getCreatedTime() {
+        return createdTime;
+    }
+
+    public void setCreatedTime(long createdTime) {
+        this.createdTime = createdTime;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 }

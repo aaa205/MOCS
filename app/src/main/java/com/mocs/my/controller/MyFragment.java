@@ -23,7 +23,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
  * “我的”界面
  */
 public class MyFragment extends BaseLazyFragment {
-
+    private static final String LOCAL_USER = "local_user";
     @BindView(R.id.img_user_avatar)
     CircleImageView imgAvatar;
     @BindView(R.id.text_user_id)
@@ -33,8 +33,11 @@ public class MyFragment extends BaseLazyFragment {
     private Unbinder mUnbinder;
     private User mLocalUser;//当前登陆用户
     private UserModel mUserModel;
-    public static MyFragment newInstance() {
+    public static MyFragment newInstance(User user) {
         MyFragment fragment = new MyFragment();
+        Bundle args=new Bundle();
+        args.putParcelable(LOCAL_USER,user);
+        fragment.setArguments(args);
         fragment.mUserModel=new UserModel();
         return fragment;
     }
@@ -42,7 +45,9 @@ public class MyFragment extends BaseLazyFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mLocalUser=(User) getActivity().getIntent().getSerializableExtra("local_user");
+        if (getArguments()!=null){
+            mLocalUser=getArguments().getParcelable(LOCAL_USER);
+        }
     }
 
     @Override
@@ -56,7 +61,7 @@ public class MyFragment extends BaseLazyFragment {
 
     @Override
     protected void loadData() {
-        textId.setText(String.valueOf(mLocalUser.getId()));
+        textId.setText(String.valueOf(mLocalUser.getUserId()));
         textNickname.setText(mLocalUser.getNickname());
         new MyAsynTask().execute();//加载qq信息
     }

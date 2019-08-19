@@ -8,14 +8,12 @@ import android.os.Bundle;
 
 import android.util.Log;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mocs.R;
@@ -123,22 +121,26 @@ public class LoginActivity extends AppCompatActivity {
                         okHttpClient.newCall(request).enqueue(new Callback() {
                             @Override
                             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                                Toast.makeText(LoginActivity.this, "登录失败,请检查网络状态", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(LoginActivity.this, getText(R.string.network_error_message), Toast.LENGTH_SHORT).show();
                             }
 
                             @Override
                             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                                if(!response.isSuccessful()){
+                                    Toast.makeText(LoginActivity.this, getText(R.string.network_error_message), Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
                                 JsonObject jsonObject = new JsonParser().parse(response.body().string()).getAsJsonObject();
                                 //检查是否登录成功
                                 int status =jsonObject.get("status").getAsInt();
                                 if(status!=200){
-                                    Toast.makeText(LoginActivity.this,"登录失败，请稍后重试",Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(LoginActivity.this,"登录失败，status="+status,Toast.LENGTH_SHORT).show();
                                     return;
                                 }
-                                int id=jsonObject.get("id").getAsInt();
+                                int id=jsonObject.get("user_id").getAsInt();
                                 String nickName=jsonObject.get("nickname").getAsString();
                                 String accessToken = jsonObject.get("access_token").getAsString();
-                                user.setId(id);
+                                user.setUserId(id);
                                 user.setNickname(nickName);
                                 user.setAccessToken(accessToken);
                                 intent.putExtra("local_user",user);//传入用户类

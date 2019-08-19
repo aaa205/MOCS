@@ -4,10 +4,8 @@ package com.mocs.common.bean;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.io.Serializable;
-
 /**
- * id ： 服务器返回的用户id
+ * userId ： 服务器返回的用户id
  * nickname ： 用户名称
  * accessToken ： 调用服务器api的token
  * qqOpenId ：用户的qq的id
@@ -15,7 +13,7 @@ import java.io.Serializable;
  */
 public class User implements Parcelable {
     private String nickname;
-    private int id;
+    private int userId;
     private String qqOpenId;
     private String qqAccessToken;
     private String accessToken;
@@ -30,7 +28,7 @@ public class User implements Parcelable {
     }
     protected User(Parcel in) {
         nickname = in.readString();
-        id = in.readInt();
+        userId = in.readInt();
         qqOpenId = in.readString();
         qqAccessToken = in.readString();
         accessToken = in.readString();
@@ -40,7 +38,7 @@ public class User implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(nickname);
-        dest.writeInt(id);
+        dest.writeInt(userId);
         dest.writeString(qqOpenId);
         dest.writeString(qqAccessToken);
         dest.writeString(accessToken);
@@ -97,12 +95,12 @@ public class User implements Parcelable {
         this.nickname = nickname;
     }
 
-    public int getId() {
-        return id;
+    public int getUserId() {
+        return userId;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
     public String getQqOpenId() {

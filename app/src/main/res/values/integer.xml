@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="upload_image_limit">2621440</integer><!--2.5MB-->
+</resources>

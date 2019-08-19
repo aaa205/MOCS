@@ -30,7 +30,7 @@ public class UserModel {
     /**
      * 获取qq用户的信息,现在只有获取qq头像，这个方法会使相关内容被添加进参数中的user
      */
-    public void getQQUserInfo(@NonNull User user) {
+    public boolean getQQUserInfo(@NonNull User user) {
         OkHttpClient client = new OkHttpClient();
         HttpUrl.Builder urlBuilder = HttpUrl.parse(GET_QQ_USER_INFO_URL).newBuilder();
         urlBuilder.addQueryParameter("access_token", user.getQqAccessToken())
@@ -45,17 +45,17 @@ public class UserModel {
             Response response = call.execute();//同步GET
             JsonObject body = new JsonParser().parse(response.body().string()).getAsJsonObject();
             int ret = body.get("ret").getAsInt();//获取返回码
-            if (ret != 0) {
-                //错误返回处理
-                String msg = body.get("msg").getAsString();
-            } else {
+            if (ret == 0) {
                 //正确返回处理
                 String url = body.get("figureurl_qq_2").getAsString();//获取px100*100的qq头像url
                 user.setAvatarImageUrl(url);
+                return true;
             }
         } catch (IOException e) {
             e.printStackTrace();
             Log.d("Network Error", "onFailure: getQQUserInfo");
         }
+        //错误返回
+        return false;
     }
 }

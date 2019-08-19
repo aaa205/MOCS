@@ -1,5 +1,7 @@
 package com.mocs.record.adapter;
 
+import android.content.Context;
+import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -20,8 +22,10 @@ import butterknife.ButterKnife;
  */
 public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.ViewHolder> {
     private List<Record> mRecordList;
-    public RecordAdapter(List<Record> recordList) {
+    private String[] types;
+    public RecordAdapter(List<Record> recordList, Context context) {
         this.mRecordList = recordList;
+        this.types=context.getResources().getStringArray(R.array.form_type);
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
@@ -54,8 +58,8 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.ViewHolder
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
         Record record = mRecordList.get(i);
-        viewHolder.timeText.setText(String.valueOf(record.getTime()));
-        viewHolder.typeText.setText(record.getType());
+        viewHolder.timeText.setText(String.valueOf(record.getCreatedTime()));
+        viewHolder.typeText.setText(types[record.getType()]);
         viewHolder.descriptionText.setText(record.getDescription());
         viewHolder.lastStepText.setText("1111");
     }

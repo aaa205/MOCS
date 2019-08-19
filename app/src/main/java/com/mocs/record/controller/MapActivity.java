@@ -26,7 +26,7 @@ import com.amap.api.maps2d.model.BitmapDescriptorFactory;
 
 import com.amap.api.maps2d.model.MyLocationStyle;
 import com.mocs.R;
-import com.mocs.common.bean.LocationInfo;
+import com.mocs.common.bean.RecordForm;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -61,7 +61,7 @@ public class MapActivity extends AppCompatActivity implements LocationSource, AM
                         //定位成功
                         if (mLocation.getErrorCode()==0){
                             Intent intent=new Intent();
-                            intent.putExtra("location_info",createLocationInfo());
+                            intent.putExtra("record_form", createRecordForm());
                             setResult(RESULT_OK,intent);
                             finish();
                         }else{
@@ -77,10 +77,10 @@ public class MapActivity extends AppCompatActivity implements LocationSource, AM
 
     /**
      * 根据创建 AMapLocation 创建Bean
-     * @return bean中自定义的LocationInfo类，存储地址信息
+     * @return bean中自定义的RecordForm类，存储地址信息
      */
-    private LocationInfo createLocationInfo(){
-        LocationInfo info=new LocationInfo();
+    private RecordForm createRecordForm(){
+        RecordForm info=new RecordForm();
         info.setAddress(mLocation.getAddress());
         info.setCity(mLocation.getCity());
         info.setCountry(mLocation.getCountry());

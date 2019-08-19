@@ -1,15 +1,16 @@
 package com.mocs.record.controller;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Toolbar;
@@ -20,13 +21,17 @@ import com.bilibili.boxing.model.config.BoxingConfig;
 import com.bilibili.boxing.model.entity.BaseMedia;
 import com.bilibili.boxing_impl.ui.BoxingActivity;
 import com.mocs.R;
-import com.mocs.common.bean.LocationInfo;
+import com.mocs.common.bean.RecordForm;
+import com.mocs.common.bean.User;
 import com.mocs.common.loader.MyBoxingMediaLoader;
 import com.mocs.record.adapter.ImageGridAdapter;
+import com.mocs.record.model.RecordModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindArray;
+import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -52,11 +57,17 @@ public class FormActivity extends AppCompatActivity {
     Button butSubmit;
     @BindView(R.id.edit_description)
     EditText editDescription;
+    @BindArray(R.array.form_type)
+    String[] types;//种类
+
     private ImageGridAdapter mGridAdapter;
     private ArrayList<String> mPathList;//图片路径集合
-
+    private User mLocalUser;
+    private RecordForm mRecordForm;//表格信息
+    private int mType;//种类编号
     private static final int SELECT_IMAGE = 2;//选择图片
-    private static final int GET_ADDRESS=3;//获取地址
+    private static final int GET_LOCATION_INFO = 3;//获取地址
+    private static final String LOCAL_USER = "local_user";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +75,8 @@ public class FormActivity extends AppCompatActivity {
         setContentView(R.layout.activity_form);
         ButterKnife.bind(this);
         mPathList = new ArrayList<>();
+        mRecordForm = new RecordForm();
+        mLocalUser = getIntent().getParcelableExtra(LOCAL_USER);
         initView();
     }
 
@@ -89,24 +102,37 @@ public class FormActivity extends AppCompatActivity {
     /**
      * 注册表格点击事件
      */
-    private void initFormListener(){
+    private void initFormListener() {
         //类型挑选
-        String[] types = getResources().getStringArray(R.array.form_type);
-        AlertDialog typeDialog=new AlertDialog.Builder(this)
-                .setItems(types, (di,i)-> textType.setText(types[i])).create();
-        layoutType.setOnClickListener((v)->typeDialog.show());
+
+        AlertDialog typeDialog = new AlertDialog.Builder(this)
+                .setItems(types, (di, i) -> {
+                    textType.setText(types[i]);
+                    mType=i;//存储选择类型编号
+                }).create();
+        layoutType.setOnClickListener((v) -> typeDialog.show());
         //点击定位
-        layoutAddress.setOnClickListener((v)->{
-            Intent intent=new Intent(FormActivity.this,MapActivity.class);
-            startActivityForResult(intent,GET_ADDRESS);
+        layoutAddress.setOnClickListener((v) -> {
+            Intent intent = new Intent(FormActivity.this, MapActivity.class);
+            startActivityForResult(intent, GET_LOCATION_INFO);
         });
         //提交按钮
-        butSubmit.setOnClickListener((v)->{
-            String type=textType.getText().toString();
-            String address=textAddress.getText().toString();
-            String desc=editDescription.getText().toString();
-            if (desc.isEmpty()||type.isEmpty()||address.isEmpty())
-                Toast.makeText(FormActivity.this,"有项目未填写",Toast.LENGTH_SHORT).show();
+        butSubmit.setOnClickListener((v) -> {
+            String type = textType.getText().toString();
+            String address = textAddress.getText().toString();
+            String desc = editDescription.getText().toString();
+            //为空表示没有获取地理位置
+            if (mRecordForm==null||desc.isEmpty() || type.isEmpty() || address.isEmpty()) {
+                Toast.makeText(FormActivity.this, "有项目未填写", Toast.LENGTH_SHORT).show();
+            } else {
+                //注入Bean
+                mRecordForm.setDescription(desc);
+                mRecordForm.setCreatedTime(System.currentTimeMillis());
+                mRecordForm.setType(mType);
+                mRecordForm.setUserId(mLocalUser.getUserId());
+                RecordModel recordModel=new RecordModel(this,mLocalUser);
+                recordModel.uploadForm(mRecordForm,mPathList);//上传表格数据与图片
+            }
         });
     }
 
@@ -133,9 +159,9 @@ public class FormActivity extends AppCompatActivity {
                         mGridAdapter.notifyDataSetChanged();
                     }
                     break;
-                case GET_ADDRESS:
-                    LocationInfo locationInfo=data.getParcelableExtra("location_info");
-                    textAddress.setText(locationInfo.getAddress());
+                case GET_LOCATION_INFO:
+                    mRecordForm = data.getParcelableExtra("record_form");
+                    textAddress.setText(mRecordForm.getAddress());
                     break;
             }
         }
