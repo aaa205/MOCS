@@ -2,6 +2,7 @@ package com.mocs.record.controller;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -27,6 +28,7 @@ import com.mocs.common.loader.MyBoxingMediaLoader;
 import com.mocs.record.adapter.ImageGridAdapter;
 import com.mocs.record.model.RecordModel;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,12 +61,13 @@ public class FormActivity extends AppCompatActivity {
     EditText editDescription;
     @BindArray(R.array.form_type)
     String[] types;//种类
-
+    private ProgressDialog loadingProgress;
     private ImageGridAdapter mGridAdapter;
     private ArrayList<String> mPathList;//图片路径集合
     private User mLocalUser;
     private RecordForm mRecordForm;//表格信息
     private int mType;//种类编号
+    private RecordModel mRecordModel;
     private static final int SELECT_IMAGE = 2;//选择图片
     private static final int GET_LOCATION_INFO = 3;//获取地址
     private static final String LOCAL_USER = "local_user";
@@ -77,6 +80,7 @@ public class FormActivity extends AppCompatActivity {
         mPathList = new ArrayList<>();
         mRecordForm = new RecordForm();
         mLocalUser = getIntent().getParcelableExtra(LOCAL_USER);
+        mRecordModel=new RecordModel(this,mLocalUser);
         initView();
     }
 
@@ -130,8 +134,8 @@ public class FormActivity extends AppCompatActivity {
                 mRecordForm.setCreatedTime(System.currentTimeMillis());
                 mRecordForm.setType(mType);
                 mRecordForm.setUserId(mLocalUser.getUserId());
-                RecordModel recordModel=new RecordModel(this,mLocalUser);
-                recordModel.uploadForm(mRecordForm,mPathList);//上传表格数据与图片
+                new FormAsyncTask().execute();//上传
+
             }
         });
     }
@@ -174,5 +178,50 @@ public class FormActivity extends AppCompatActivity {
         toolbar.setNavigationOnClickListener((v) -> finish());
         initGridView();
         initFormListener();
+        loadingProgress=new ProgressDialog(FormActivity.this);
+        loadingProgress.setIndeterminate(true);
+        loadingProgress.setMessage("上传中...");
+        loadingProgress.setCanceledOnTouchOutside(false);
+    }
+
+    /**
+     * 执行上传表单工作
+     */
+    private class FormAsyncTask extends AsyncTask<Void,Integer,String>{
+
+        @Override
+        protected void onPreExecute() {
+            loadingProgress.show();
+        }
+
+        @Override
+        protected String doInBackground(Void... voids) {
+            String msg=null;
+            try {
+                //先检查图片能否上传
+                if (mRecordModel.isUploadable(mPathList)) {
+                    int id=mRecordModel.uploadRecordText(mRecordForm);
+                    mRecordModel.uploadRecordImage(mPathList,id);
+                }else{
+                    msg="请勿上传大于2.5MB的图片";
+                }
+            }catch (IOException ioe){
+                msg=getText(R.string.network_error_message).toString();
+            }
+            catch (Exception e) {
+                msg=e.getMessage();
+            }finally {
+                return msg;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            loadingProgress.dismiss();
+            if (s!=null)
+                Toast.makeText(FormActivity.this, s, Toast.LENGTH_SHORT).show();
+            else
+                finish();
+        }
     }
 }
