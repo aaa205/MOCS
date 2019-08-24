@@ -1,9 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!--Record种类-->
     <string-array name="form_type">
         <item>路况异常报告</item>
         <item>设施故障报告</item>
         <item>设施设置不合理</item>
         <item>其它</item>
+    </string-array>
+    <!--描述Record状态-->
+    <string-array name="record_state">
+        <item>未审核</item>
+        <item>处理中</item>
+        <item>已完成</item>
     </string-array>
 </resources>

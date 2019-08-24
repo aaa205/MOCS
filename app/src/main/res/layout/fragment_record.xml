@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".record.controller.RecordFragment">
+    tools:context=".recordInfo.controller.RecordFragment">
 
     <Toolbar
         android:id="@+id/toolbar_record"
@@ -17,13 +17,27 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"></Toolbar>
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recyclerView_record"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+    <com.scwang.smartrefresh.layout.SmartRefreshLayout
+        android:id="@+id/refresh_layout_record"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar_record"></android.support.v7.widget.RecyclerView>
+        app:layout_constraintTop_toBottomOf="@+id/toolbar_record"
+        app:srlEnablePreviewInEditMode="true">
+    <com.scwang.smartrefresh.layout.header.ClassicsHeader
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerView_record"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        <com.scwang.smartrefresh.layout.footer.ClassicsFooter
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:srlClassicsSpinnerStyle="Translate" />
+    </com.scwang.smartrefresh.layout.SmartRefreshLayout>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/add_button_record"

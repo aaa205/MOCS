@@ -1,7 +1,6 @@
 package com.mocs.record.adapter;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -10,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.mocs.R;
-import com.mocs.common.bean.Record;
+import com.mocs.common.bean.RecordInfo;
 
 import java.util.List;
 
@@ -21,10 +20,10 @@ import butterknife.ButterKnife;
  * 展示提交记录
  */
 public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.ViewHolder> {
-    private List<Record> mRecordList;
+    private List<RecordInfo> mRecordInfoList;
     private String[] types;
-    public RecordAdapter(List<Record> recordList, Context context) {
-        this.mRecordList = recordList;
+    public RecordAdapter(List<RecordInfo> recordInfoList, Context context) {
+        this.mRecordInfoList = recordInfoList;
         this.types=context.getResources().getStringArray(R.array.form_type);
     }
 
@@ -57,16 +56,16 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.ViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
-        Record record = mRecordList.get(i);
-        viewHolder.timeText.setText(String.valueOf(record.getCreatedTime()));
-        viewHolder.typeText.setText(types[record.getType()]);
-        viewHolder.descriptionText.setText(record.getDescription());
+        RecordInfo recordInfo = mRecordInfoList.get(i);
+        viewHolder.timeText.setText(String.valueOf(recordInfo.getCreatedTime()));
+        viewHolder.typeText.setText(types[recordInfo.getType()]);
+        viewHolder.descriptionText.setText(recordInfo.getDescription());
         viewHolder.lastStepText.setText("1111");
     }
 
     @Override
     public int getItemCount() {
-        return mRecordList.size();
+        return mRecordInfoList.size();
     }
 
 }

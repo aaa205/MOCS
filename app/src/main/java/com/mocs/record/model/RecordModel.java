@@ -1,20 +1,22 @@
 package com.mocs.record.model;
 
 import android.content.Context;
-import android.util.Log;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.reflect.TypeToken;
 import com.mocs.R;
 import com.mocs.common.bean.RecordForm;
+import com.mocs.common.bean.RecordInfo;
 import com.mocs.common.bean.User;
 
 
 import java.io.File;
 import java.util.List;
 
+import okhttp3.HttpUrl;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
@@ -37,6 +39,34 @@ public class RecordModel {
         mLocalUesr = user;
     }
 
+    /**
+     * 获取指定用户的记录的简单信息
+     * @param offset
+     * @param rows
+     * @return
+     * @throws Exception
+     */
+    public List<RecordInfo> getRecordInfoList(int offset,int rows) throws Exception {
+        OkHttpClient client=new OkHttpClient();
+        HttpUrl url=HttpUrl.parse(mServiceHost+"/records").newBuilder()
+                .addQueryParameter("userId",String.valueOf(mLocalUesr.getUserId()))
+                .addQueryParameter("offset",String.valueOf(offset))
+                .addQueryParameter("rows",String.valueOf(rows))
+                .build();
+        Request request=new Request.Builder()
+                .url(url)
+                .get()
+                .build();
+        Response response=client.newCall(request).execute();
+        if (!response.isSuccessful())
+            throw new Exception(mContext.getResources().getString(R.string.network_error_message));
+        JsonObject jsonObject = new JsonParser().parse(response.body().string()).getAsJsonObject();
+        if (jsonObject.get("status").getAsInt()!=200)//查询失败
+            throw new Exception(jsonObject.get("msg").getAsString());
+        JsonArray jsonArr=jsonObject.get("records").getAsJsonArray();
+        List<RecordInfo> list=new Gson().fromJson(jsonArr,new TypeToken<List<RecordInfo>>(){}.getType());
+        return list;
+    }
 
 
     /**
