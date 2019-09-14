@@ -3,6 +3,7 @@ package com.mocs.record.adapter;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,11 +23,18 @@ import butterknife.ButterKnife;
 public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.ViewHolder> {
     private List<RecordInfo> mRecordInfoList;
     private String[] types;
+    private String[] states;
+    private OnItemClickListener mListener;
     public RecordAdapter(List<RecordInfo> recordInfoList, Context context) {
         this.mRecordInfoList = recordInfoList;
-        this.types=context.getResources().getStringArray(R.array.form_type);
+        this.types=context.getResources().getStringArray(R.array.record_type);
+        this.states=context.getResources().getStringArray(R.array.record_state);
+
     }
 
+    public interface OnItemClickListener{
+        void onItemClick(int position);
+    }
     static class ViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.time_record)
@@ -35,17 +43,18 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.ViewHolder
         TextView typeText;
         @BindView(R.id.description_record)
         TextView descriptionText;
-        @BindView(R.id.last_step_record)
-        TextView lastStepText;
-
+        @BindView(R.id.state_record)
+        TextView stateText;
+        View itemView;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+            this.itemView=itemView;
         }
-
-
     }
-
+    public void addOnItemClickListener(OnItemClickListener listener){
+        mListener=listener;
+    }
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
@@ -57,10 +66,14 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.ViewHolder
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
         RecordInfo recordInfo = mRecordInfoList.get(i);
-        viewHolder.timeText.setText(String.valueOf(recordInfo.getCreatedTime()));
+        viewHolder.timeText.setText(DateUtils.getRelativeTimeSpanString(recordInfo.getCreatedTime()));
         viewHolder.typeText.setText(types[recordInfo.getType()]);
         viewHolder.descriptionText.setText(recordInfo.getDescription());
-        viewHolder.lastStepText.setText("1111");
+        viewHolder.stateText.setText(states[recordInfo.getState()]);
+        viewHolder.itemView.setOnClickListener((v)->{
+            if (mListener!=null)
+                mListener.onItemClick(i);
+        });
     }
 
     @Override

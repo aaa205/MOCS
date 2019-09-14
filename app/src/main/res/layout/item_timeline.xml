@@ -4,40 +4,51 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginHorizontal="2dp"
+    android:layout_marginHorizontal="16dp"
     android:orientation="horizontal">
 
     <com.github.vipulasri.timelineview.TimelineView
-        android:id="@+id/timeline"
+        android:id="@+id/timeline_item"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:paddingBottom="5dp"
-        app:marker="@drawable/ic_marker_active"
+        app:markerInCenter="true"
         app:lineWidth="2dp"
         app:markerSize="16dp" />
 
-    <LinearLayout
+    <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginBottom="3dp"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:paddingLeft="3sp">
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="4dp"
+        android:layout_marginVertical="12dp"
+        android:padding="10dp"
+        app:cardBackgroundColor="#F3F3F3"
+        app:cardElevation="3dp">
 
-        <TextView
-            android:id="@+id/timeline_time_text"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="12sp"
-            tools:text="24 JAN" />
+            android:layout_gravity="center"
+            android:padding="5dp"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:paddingLeft="3sp">
 
-        <TextView
-            android:id="@+id/timeline_report_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@android:color/black"
-            android:textSize="18sp"
-            tools:text="Order Successfully Completed" />
-    </LinearLayout>
+            <TextView
+                android:id="@+id/timeline_time_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                tools:text="24 JAN" />
+
+            <TextView
+                android:id="@+id/timeline_report_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp"
+                android:textColor="@android:color/black"
+                android:textSize="18sp"
+                tools:text="Order Successfully Completed" />
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
 </LinearLayout>

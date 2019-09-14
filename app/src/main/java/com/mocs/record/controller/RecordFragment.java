@@ -10,6 +10,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -31,6 +32,10 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import jp.wasabeef.recyclerview.animators.FadeInUpAnimator;
+import jp.wasabeef.recyclerview.animators.SlideInDownAnimator;
+
+import static android.app.Activity.RESULT_OK;
 
 /**
  * 修改了布局 使用CardView来展示,完成获取数据
@@ -42,6 +47,7 @@ import butterknife.Unbinder;
 
 public class RecordFragment extends BaseLazyFragment {
     private static final String LOCAL_USER = "local_user";
+    private static final int REFRESH=19;
     private Unbinder mUnbinder;
     @BindView(R.id.recyclerView_record)
     RecyclerView recyclerView;
@@ -67,7 +73,7 @@ public class RecordFragment extends BaseLazyFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mLocalUser = getArguments().getParcelable(LOCAL_USER);
+            mLocalUser = getArguments().getParcelable(LOCAL_USER);//取出用户信息
             mRecordModel = new RecordModel(getContext(), mLocalUser);
         }
     }
@@ -91,12 +97,21 @@ public class RecordFragment extends BaseLazyFragment {
     private void initView() {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
+        //创建adapter 设置单个元素的点击监听器
         RecordAdapter adapter = new RecordAdapter(mRecordInfoList, getContext());
+        adapter.addOnItemClickListener((i)->{
+            Intent intent=new Intent(getContext(),RecordDetailActivity.class);
+            intent.putExtra(LOCAL_USER,mLocalUser);//传入用户信息
+            intent.putExtra("record_info",mRecordInfoList.get(i));//传入RecordInfo类
+            startActivity(intent);
+        });
+        recyclerView.setItemAnimator(new FadeInUpAnimator());
         recyclerView.setAdapter(adapter);
+
         floatingButton.setOnClickListener((v) -> {
             Intent intent = new Intent(getContext(), FormActivity.class);
             intent.putExtras(getArguments());//传入mLocalUser
-            startActivity(intent);
+            startActivityForResult(intent,REFRESH);
         });
         refreshLayout.setOnRefreshListener((layout -> new RefreshAsyncTask().execute()));
         refreshLayout.setOnLoadMoreListener((layout->new LoadMoreAsyncTask().execute()));
@@ -106,6 +121,17 @@ public class RecordFragment extends BaseLazyFragment {
     public void onDestroyView() {
         super.onDestroyView();
         mUnbinder.unbind();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode==RESULT_OK){
+            switch (requestCode){
+                case REFRESH:
+                    refreshLayout.autoRefresh();
+            }
+
+        }
     }
 
     /**
@@ -135,7 +161,7 @@ public class RecordFragment extends BaseLazyFragment {
             }
             refreshLayout.setNoMoreData(false);
             refreshLayout.finishRefresh();
-            recyclerView.getAdapter().notifyDataSetChanged();//刷新列表
+            recyclerView.getAdapter().notifyItemRangeInserted(0,mRecordInfoList.size());
 
         }
     }
@@ -166,7 +192,7 @@ public class RecordFragment extends BaseLazyFragment {
             if (originalSize==mRecordInfoList.size())
                 refreshLayout.setNoMoreData(true);//没有更多数据了
             refreshLayout.finishLoadMore();
-            recyclerView.getAdapter().notifyDataSetChanged();
+            recyclerView.getAdapter().notifyItemRangeInserted(originalSize,mOffset);
         }
     }
 

@@ -5,7 +5,6 @@ public class RecordStep {
     private int recordId;
     private long time;//发布的时间
     private String reportText;//回复内容
-    private int state;//状态
 
     public long getRecordId() {
         return recordId;
@@ -31,11 +30,4 @@ public class RecordStep {
         this.reportText = reportText;
     }
 
-    public int getState() {
-        return state;
-    }
-
-    public void setState(int state) {
-        this.state = state;
-    }
 }

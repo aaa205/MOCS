@@ -1,7 +1,10 @@
 package com.mocs.record.adapter;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,9 +21,10 @@ import butterknife.ButterKnife;
 /**记录的时间线Adapter*/
 public class TimeLineAdapter extends RecyclerView.Adapter<TimeLineAdapter.ViewHolder> {
     private List<RecordStep> mRecordStepList;
-
-    public TimeLineAdapter( List<RecordStep> mRecordStepList) {
+    private Context mContext;
+    public TimeLineAdapter( List<RecordStep> mRecordStepList ,Context context) {
         this.mRecordStepList = mRecordStepList;
+        mContext=context;
     }
 
     @Override
@@ -40,8 +44,15 @@ public class TimeLineAdapter extends RecyclerView.Adapter<TimeLineAdapter.ViewHo
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
         RecordStep recordStep=mRecordStepList.get(i);
         viewHolder.report_text.setText(recordStep.getReportText());
-        viewHolder.time_text.setText(String.valueOf(recordStep.getTime()));
+        viewHolder.time_text.setText(DateUtils.getRelativeTimeSpanString(recordStep.getTime()));
+        TimelineView timelineView=viewHolder.timeline;
+        if (i==0) {
+            //第一个的图标设成活动
+            timelineView.setMarker(mContext.getDrawable(R.drawable.ic_marker_active),mContext.getColor(R.color.colorAccent));
+            timelineView.setLineStyle(TimelineView.LineStyle.DASHED);
 
+        }else
+            timelineView.setMarker(mContext.getDrawable(R.drawable.ic_marker_active),timelineView.getStartLineColor());
     }
 
     @Override
@@ -50,7 +61,7 @@ public class TimeLineAdapter extends RecyclerView.Adapter<TimeLineAdapter.ViewHo
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.timeline)
+        @BindView(R.id.timeline_item)
         TimelineView timeline;
         @BindView(R.id.timeline_time_text)
         TextView time_text;

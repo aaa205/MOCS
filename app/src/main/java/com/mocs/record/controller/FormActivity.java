@@ -11,7 +11,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Toolbar;
@@ -33,7 +32,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindArray;
-import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -59,7 +57,7 @@ public class FormActivity extends AppCompatActivity {
     Button butSubmit;
     @BindView(R.id.edit_description)
     EditText editDescription;
-    @BindArray(R.array.form_type)
+    @BindArray(R.array.record_type)
     String[] types;//种类
     private ProgressDialog loadingProgress;
     private ImageGridAdapter mGridAdapter;

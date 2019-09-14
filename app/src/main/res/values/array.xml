@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!--Record种类-->
-    <string-array name="form_type">
-        <item>路况异常报告</item>
-        <item>设施故障报告</item>
+    <string-array name="record_type">
+        <item>路况异常</item>
+        <item>设施故障</item>
         <item>设施设置不合理</item>
         <item>其它</item>
     </string-array>
