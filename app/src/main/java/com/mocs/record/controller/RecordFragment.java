@@ -47,7 +47,7 @@ import static android.app.Activity.RESULT_OK;
 
 public class RecordFragment extends BaseLazyFragment {
     private static final String LOCAL_USER = "local_user";
-    private static final int REFRESH=19;
+    protected static final int REFRESH=19;
     private Unbinder mUnbinder;
     @BindView(R.id.recyclerView_record)
     RecyclerView recyclerView;
@@ -88,7 +88,7 @@ public class RecordFragment extends BaseLazyFragment {
     }
 
     @Override
-    protected void loadData() {
+    protected void lazyLoadData() {
         initView();
         refreshLayout.autoRefresh();
     }

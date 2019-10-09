@@ -10,6 +10,7 @@ import com.google.gson.reflect.TypeToken;
 import com.mocs.R;
 import com.mocs.common.bean.RecordForm;
 import com.mocs.common.bean.RecordInfo;
+import com.mocs.common.bean.RecordStep;
 import com.mocs.common.bean.User;
 
 
@@ -39,6 +40,32 @@ public class RecordModel {
         mLocalUesr = user;
     }
 
+    /**
+     * 获取指定record的recordStep
+     * @param recordId
+     * @return
+     * @throws Exception
+     */
+    public List<RecordStep> getRecordStepList(int recordId)throws Exception{
+        OkHttpClient client=new OkHttpClient();
+        HttpUrl url=HttpUrl.parse(mServiceHost+"/records/steps").newBuilder()
+                .addQueryParameter("record_id",String.valueOf(recordId))
+                .build();
+        Request request=new Request.Builder()
+                .header("Authorization",mLocalUesr.getAccessToken())
+                .url(url)
+                .get()
+                .build();
+        Response response=client.newCall(request).execute();
+        if (!response.isSuccessful())
+            throw new Exception(mContext.getResources().getString(R.string.network_error_message));
+        JsonObject jsonObject=new JsonParser().parse(response.body().string()).getAsJsonObject();
+        if (jsonObject.get("status").getAsInt()!=200)
+            throw new Exception(jsonObject.get("msg").getAsString());
+        JsonArray array=jsonObject.get("steps").getAsJsonArray();
+        List<RecordStep> list=new Gson().fromJson(array,new TypeToken<List<RecordStep>>(){}.getType());
+        return list;
+    }
     /**
      * 获取指定用户的记录的简单信息
      * @param offset

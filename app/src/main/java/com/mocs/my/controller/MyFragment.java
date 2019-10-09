@@ -60,7 +60,7 @@ public class MyFragment extends BaseLazyFragment {
     }
 
     @Override
-    protected void loadData() {
+    protected void lazyLoadData() {
         textId.setText(String.valueOf(mLocalUser.getUserId()));
         textNickname.setText(mLocalUser.getNickname());
         new MyAsynTask().execute();//加载qq信息

@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".recordInfo.controller.FormActivity">
+    tools:context=".record.controller.FormActivity">
 
     <Toolbar
         android:id="@+id/toolbar_form"
@@ -16,7 +16,8 @@
         android:minHeight="?attr/actionBarSize"
         android:navigationIcon="@drawable/ic_arrow_back_black_24dp"
         android:theme="?attr/actionBarTheme"
-        android:title="提交表单" />
+        android:title="提交表单"
+        android:contentInsetStartWithNavigation="0dp"/>
 
     <ScrollView
         android:layout_width="match_parent"

@@ -33,12 +33,12 @@ public abstract class BaseLazyFragment extends Fragment {
         //当前对用户可见，UI已准备好，未加载数据时，加载数据
         Log.d("Lazy","run lazyLoad");
         if (getUserVisibleHint()&& isViewPrepared &&!isLoaded){
-            loadData();
+            lazyLoadData();
             isLoaded=true;
         }
     }
     /**加载数据放在这里*/
-    protected abstract void loadData();
+    protected abstract void lazyLoadData();
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {

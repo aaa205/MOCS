@@ -2,7 +2,6 @@ package com.mocs.record.adapter;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.format.DateUtils;
 import android.view.LayoutInflater;
@@ -43,8 +42,8 @@ public class TimeLineAdapter extends RecyclerView.Adapter<TimeLineAdapter.ViewHo
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
         RecordStep recordStep=mRecordStepList.get(i);
-        viewHolder.report_text.setText(recordStep.getReportText());
-        viewHolder.time_text.setText(DateUtils.getRelativeTimeSpanString(recordStep.getTime()));
+        viewHolder.report_text.setText(recordStep.getDescription());
+        viewHolder.time_text.setText(DateUtils.getRelativeTimeSpanString(recordStep.getCreatedTime()));
         TimelineView timelineView=viewHolder.timeline;
         if (i==0) {
             //第一个的图标设成活动

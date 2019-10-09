@@ -41,6 +41,7 @@ import butterknife.ButterKnife;
  * 2019-8-8
  */
 public class FormActivity extends AppCompatActivity {
+    protected
     @BindView(R.id.toolbar_form)
     Toolbar toolbar;
     @BindView(R.id.layout_address)
@@ -208,9 +209,9 @@ public class FormActivity extends AppCompatActivity {
             }
             catch (Exception e) {
                 msg=e.getMessage();
-            }finally {
-                return msg;
             }
+            return msg;
+
         }
 
         @Override
@@ -219,7 +220,7 @@ public class FormActivity extends AppCompatActivity {
             if (s!=null)
                 Toast.makeText(FormActivity.this, s, Toast.LENGTH_SHORT).show();
             else
-                finish();
+                finishActivity(RecordFragment.REFRESH);
         }
     }
 }

@@ -1,29 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".recordInfo.controller.MapActivity">
+    android:orientation="vertical"
+    tools:context=".record.controller.MapActivity">
 
-    <Toolbar
-        android:id="@+id/toolbar_map"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
-        android:title="确认地址"
-        android:titleTextColor="@color/colorPageTitle"
-        android:navigationIcon="@drawable/ic_arrow_back_black_24dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"></Toolbar>
 
-    <com.amap.api.maps2d.MapView
-        android:id="@+id/mapView"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar_map"></com.amap.api.maps2d.MapView>
-</android.support.constraint.ConstraintLayout>
+        android:layout_height="wrap_content">
+
+        <Toolbar
+            android:id="@+id/toolbar_map"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/colorPrimary"
+            android:contentInsetStartWithNavigation="0dp"
+            android:navigationIcon="@drawable/ic_arrow_back_black_24dp"
+            android:title="确认地址"
+            android:titleTextColor="@color/colorPageTitle"></Toolbar>
+
+        <com.miguelcatalan.materialsearchview.MaterialSearchView
+            android:id="@+id/search_view_map"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="输入地点查找"
+            android:visibility="gone"></com.miguelcatalan.materialsearchview.MaterialSearchView>
+    </FrameLayout>
+
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.amap.api.maps2d.MapView
+            android:id="@+id/mapView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"></com.amap.api.maps2d.MapView>
+    </FrameLayout>
+
+
+</LinearLayout>

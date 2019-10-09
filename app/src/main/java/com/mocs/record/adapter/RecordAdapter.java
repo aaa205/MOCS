@@ -29,7 +29,6 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.ViewHolder
         this.mRecordInfoList = recordInfoList;
         this.types=context.getResources().getStringArray(R.array.record_type);
         this.states=context.getResources().getStringArray(R.array.record_state);
-
     }
 
     public interface OnItemClickListener{
@@ -58,7 +57,8 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.ViewHolder
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View view= LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_record,viewGroup,false);
+        View view= LayoutInflater.from(viewGroup.getContext())
+                .inflate(R.layout.item_record,viewGroup,false);
         ViewHolder viewHolder=new ViewHolder(view);
         return viewHolder;
     }

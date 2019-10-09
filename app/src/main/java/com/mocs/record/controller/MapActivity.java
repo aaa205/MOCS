@@ -9,6 +9,8 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 import android.widget.Toolbar;
 
@@ -25,22 +27,42 @@ import com.amap.api.maps2d.MapView;
 import com.amap.api.maps2d.model.BitmapDescriptorFactory;
 
 import com.amap.api.maps2d.model.MyLocationStyle;
+import com.amap.api.services.core.LatLonPoint;
+import com.amap.api.services.core.PoiItem;
+import com.amap.api.services.help.Inputtips;
+import com.amap.api.services.help.InputtipsQuery;
+import com.amap.api.services.help.Tip;
+import com.amap.api.services.poisearch.PoiResult;
+import com.amap.api.services.poisearch.PoiSearch;
+import com.miguelcatalan.materialsearchview.MaterialSearchView;
 import com.mocs.R;
 import com.mocs.common.bean.RecordForm;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MapActivity extends AppCompatActivity implements LocationSource, AMapLocationListener {
+/**
+ * 搜索栏中只有开头和关键字一样的项才能显示
+ */
+public class MapActivity extends AppCompatActivity implements
+        LocationSource, AMapLocationListener, PoiSearch.OnPoiSearchListener, Inputtips.InputtipsListener {
     @BindView(R.id.mapView)
     MapView mMapView;
     @BindView(R.id.toolbar_map)
     Toolbar toolbar;
+    @BindView(R.id.search_view_map)
+    MaterialSearchView searchView;
     private AMap aMap;
     private OnLocationChangedListener mListener;
     private AMapLocationClient mLocationClient;
     private AMapLocationClientOption mLocationOption;
     private AMapLocation mLocation;
+    private PoiSearch mPoiSearch;
+    private String mKeyWord;//保存搜索栏关键字
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,26 +71,88 @@ public class MapActivity extends AppCompatActivity implements LocationSource, AM
         ButterKnife.bind(this);
         checkPermission();
         mMapView.onCreate(savedInstanceState);
-        initView();
+        initToolbar();
     }
 
-    private void initView() {
+    /**
+     * 执行POI搜索
+     *
+     * @param keyword
+     */
+    private void doPOISearch(String keyword) {
+        if (null == mPoiSearch) {
+
+            PoiSearch.Query query = new PoiSearch.Query(keyword, "", mLocation.getCity());
+            query.setPageSize(7);//每页返回多少条结果
+            query.setPageNum(0);//查询页码
+            PoiSearch mPoiSearch = new PoiSearch(this, query);
+            mPoiSearch.setBound(new PoiSearch.SearchBound(new LatLonPoint(mLocation.getLatitude(),
+                    mLocation.getLongitude()), 1500));//设置周边搜索的中心点以及半径
+            mPoiSearch.setOnPoiSearchListener(this);
+
+        }
+        mPoiSearch.searchPOIAsyn();
+    }
+
+    /**
+     * 获取输入提示搜索
+     * @param keyword
+     */
+    private void getInputTips(String keyword){
+        //设置输入提醒
+        mKeyWord=keyword;
+        InputtipsQuery inputtipsQuery = new InputtipsQuery(keyword, mLocation.getCity());
+        inputtipsQuery.setCityLimit(true);//限制当前城市
+        Inputtips inputtips = new Inputtips(this, inputtipsQuery);
+        inputtips.setInputtipsListener(this);
+        inputtips.requestInputtipsAsyn();
+    }
+
+    private void initToolbar() {
         toolbar.inflateMenu(R.menu.menu_map);
-        toolbar.setOnMenuItemClickListener(menuItem -> {
-            switch (menuItem.getItemId()) {
-                case R.id.commit_map:
-                    if (mLocation!=null){
+        //设置searchView
+       // searchView.setMenuItem(toolbar.getMenu().getItem(0));//监听搜索按钮的点击事件
+        searchView.setOnQueryTextListener(new MaterialSearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return true;
+            }
+
+            /**
+             * 请求输入提示
+             * @param newText
+             * @return
+             */
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                getInputTips(newText);
+                Log.d("MAP_SEARCH","TextChange: "+newText);
+                return true;
+            }
+        });
+
+        toolbar.setOnMenuItemClickListener(item -> {
+
+            switch (item.getItemId()) {
+                case R.id.action_commit_map:
+                    if (mLocation != null) {
                         //定位成功
-                        if (mLocation.getErrorCode()==0){
-                            Intent intent=new Intent();
+                        if (mLocation.getErrorCode() == 0) {
+                            Intent intent = new Intent();
                             intent.putExtra("record_form", createRecordForm());
-                            setResult(RESULT_OK,intent);
+                            setResult(RESULT_OK, intent);
                             finish();
-                        }else{
-                            Toast.makeText(this,mLocation.getErrorInfo(),Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(this, mLocation.getErrorInfo(), Toast.LENGTH_SHORT).show();
                         }
                     }
                     return true;
+                case R.id.actoin_search_map:
+                    //打开搜索框
+                    searchView.showSearch(true);
+                    searchView.setVisibility(View.VISIBLE);
+                    return true;
+
             }
             return false;
         });
@@ -77,10 +161,11 @@ public class MapActivity extends AppCompatActivity implements LocationSource, AM
 
     /**
      * 根据创建 AMapLocation 创建Bean
+     *
      * @return bean中自定义的RecordForm类，存储地址信息
      */
-    private RecordForm createRecordForm(){
-        RecordForm info=new RecordForm();
+    private RecordForm createRecordForm() {
+        RecordForm info = new RecordForm();
         info.setAddress(mLocation.getAddress());
         info.setCity(mLocation.getCity());
         info.setCountry(mLocation.getCountry());
@@ -91,6 +176,7 @@ public class MapActivity extends AppCompatActivity implements LocationSource, AM
         info.setLongitude(mLocation.getLongitude());
         return info;
     }
+
     /**
      * 初始化AMap对象
      */
@@ -126,9 +212,11 @@ public class MapActivity extends AppCompatActivity implements LocationSource, AM
      */
     private void checkPermission() {
         if (PackageManager.PERMISSION_GRANTED != ContextCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_COARSE_LOCATION)) {
+                Manifest.permission.ACCESS_COARSE_LOCATION) ||
+                PackageManager.PERMISSION_GRANTED != ContextCompat.checkSelfPermission(this,
+                        Manifest.permission.ACCESS_FINE_LOCATION)) {
             ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 0);
+                    new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, 0);
         } else
             initMap();
     }
@@ -137,7 +225,8 @@ public class MapActivity extends AppCompatActivity implements LocationSource, AM
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode) {
             case 0: {
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED
+                        && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
                     initMap();
                 }
             }
@@ -211,5 +300,39 @@ public class MapActivity extends AppCompatActivity implements LocationSource, AM
             mLocationClient.onDestroy();
         }
         mLocationClient = null;
+    }
+
+    /**
+     * 解析POI搜索的结果
+     *
+     * @param poiResult
+     * @param i         返回的结果码 1000表示成功
+     */
+    @Override
+    public void onPoiSearched(PoiResult poiResult, int i) {
+        if (i != 1000) {
+            Toast.makeText(this, "搜索失败", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        ArrayList<PoiItem> results = poiResult.getPois();
+        results.get(0).getSnippet();
+    }
+
+    @Override
+    public void onPoiItemSearched(PoiItem poiItem, int i) {
+
+    }
+
+    @Override
+    public void onGetInputtips(List<Tip> list, int i) {
+        if (i!=1000)
+            return;
+        String[] addr=new String[list.size()];
+        for (int k =0;k<list.size();k++){
+            addr[k]=list.get(k).getAddress();
+        }
+        searchView.setSuggestions(addr);
+        searchView.showSuggestions();
+        Log.d("MAP_SEARCH","suggestions:"+ Arrays.toString(addr));
     }
 }
