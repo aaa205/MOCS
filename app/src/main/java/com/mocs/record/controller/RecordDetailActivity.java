@@ -128,10 +128,10 @@ public class RecordDetailActivity extends AppCompatActivity {
         protected void onPostExecute(String s) {
             if (s==null){
                 timeLine.getAdapter().notifyDataSetChanged();
-                loadingProgress.dismiss();
             }else{
                 Toast.makeText(RecordDetailActivity.this,s,Toast.LENGTH_SHORT).show();
             }
+            loadingProgress.dismiss();
         }
     }
 }

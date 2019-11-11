@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -22,10 +23,11 @@ import com.amap.api.maps2d.AMap;
 
 import com.amap.api.maps2d.CameraUpdateFactory;
 import com.amap.api.maps2d.LocationSource;
-
 import com.amap.api.maps2d.MapView;
 import com.amap.api.maps2d.model.BitmapDescriptorFactory;
 
+import com.amap.api.maps2d.model.LatLng;
+import com.amap.api.maps2d.model.MarkerOptions;
 import com.amap.api.maps2d.model.MyLocationStyle;
 import com.amap.api.services.core.LatLonPoint;
 import com.amap.api.services.core.PoiItem;
@@ -36,17 +38,19 @@ import com.amap.api.services.poisearch.PoiResult;
 import com.amap.api.services.poisearch.PoiSearch;
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
 import com.mocs.R;
-import com.mocs.common.bean.RecordForm;
+import com.mocs.common.bean.Record;
+import com.mocs.record.model.RecordModel;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import butterknife.BindArray;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
- * 搜索栏中只有开头和关键字一样的项才能显示
+ * poi搜索：搜索栏中只有开头和关键字一样的项才能显示 --先不用
  */
 public class MapActivity extends AppCompatActivity implements
         LocationSource, AMapLocationListener, PoiSearch.OnPoiSearchListener, Inputtips.InputtipsListener {
@@ -56,6 +60,9 @@ public class MapActivity extends AppCompatActivity implements
     Toolbar toolbar;
     @BindView(R.id.search_view_map)
     MaterialSearchView searchView;
+    @BindArray(R.array.record_type)
+    String[] types;//种类
+    private RecordModel mRecordModel;
     private AMap aMap;
     private OnLocationChangedListener mListener;
     private AMapLocationClient mLocationClient;
@@ -72,6 +79,8 @@ public class MapActivity extends AppCompatActivity implements
         checkPermission();
         mMapView.onCreate(savedInstanceState);
         initToolbar();
+        mRecordModel = new RecordModel(this, getIntent().getParcelableExtra("local_user"));
+        new NearByRecordAsyncTask().execute();//绘制附近的标记
     }
 
     /**
@@ -96,11 +105,12 @@ public class MapActivity extends AppCompatActivity implements
 
     /**
      * 获取输入提示搜索
+     *
      * @param keyword
      */
-    private void getInputTips(String keyword){
+    private void getInputTips(String keyword) {
         //设置输入提醒
-        mKeyWord=keyword;
+        mKeyWord = keyword;
         InputtipsQuery inputtipsQuery = new InputtipsQuery(keyword, mLocation.getCity());
         inputtipsQuery.setCityLimit(true);//限制当前城市
         Inputtips inputtips = new Inputtips(this, inputtipsQuery);
@@ -111,7 +121,7 @@ public class MapActivity extends AppCompatActivity implements
     private void initToolbar() {
         toolbar.inflateMenu(R.menu.menu_map);
         //设置searchView
-       // searchView.setMenuItem(toolbar.getMenu().getItem(0));//监听搜索按钮的点击事件
+        // searchView.setMenuItem(toolbar.getMenu().getItem(0));//监听搜索按钮的点击事件
         searchView.setOnQueryTextListener(new MaterialSearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -126,7 +136,7 @@ public class MapActivity extends AppCompatActivity implements
             @Override
             public boolean onQueryTextChange(String newText) {
                 getInputTips(newText);
-                Log.d("MAP_SEARCH","TextChange: "+newText);
+                Log.d("MAP_SEARCH", "TextChange: " + newText);
                 return true;
             }
         });
@@ -139,7 +149,7 @@ public class MapActivity extends AppCompatActivity implements
                         //定位成功
                         if (mLocation.getErrorCode() == 0) {
                             Intent intent = new Intent();
-                            intent.putExtra("record_form", createRecordForm());
+                            intent.putExtra("record_form", createRecord());
                             setResult(RESULT_OK, intent);
                             finish();
                         } else {
@@ -162,10 +172,10 @@ public class MapActivity extends AppCompatActivity implements
     /**
      * 根据创建 AMapLocation 创建Bean
      *
-     * @return bean中自定义的RecordForm类，存储地址信息
+     * @return bean中自定义的Record类，存储地址信息
      */
-    private RecordForm createRecordForm() {
-        RecordForm info = new RecordForm();
+    private Record createRecord() {
+        Record info = new Record();
         info.setAddress(mLocation.getAddress());
         info.setCity(mLocation.getCity());
         info.setCountry(mLocation.getCountry());
@@ -325,14 +335,49 @@ public class MapActivity extends AppCompatActivity implements
 
     @Override
     public void onGetInputtips(List<Tip> list, int i) {
-        if (i!=1000)
+        if (i != 1000)
             return;
-        String[] addr=new String[list.size()];
-        for (int k =0;k<list.size();k++){
-            addr[k]=list.get(k).getAddress();
+        String[] addr = new String[list.size()];
+        for (int k = 0; k < list.size(); k++) {
+            addr[k] = list.get(k).getAddress();
         }
         searchView.setSuggestions(addr);
         searchView.showSuggestions();
-        Log.d("MAP_SEARCH","suggestions:"+ Arrays.toString(addr));
+        Log.d("MAP_SEARCH", "suggestions:" + Arrays.toString(addr));
     }
+
+
+    private class NearByRecordAsyncTask extends AsyncTask<Void, Integer, List<Record>> {
+        @Override
+        protected List<Record> doInBackground(Void... voids) {
+            while(mLocation==null) {
+                try {
+                    Thread.sleep(1500);//如果没获取到位置 先睡1.5s
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            try {
+                return mRecordModel.getNearbyRecordInfoList(mLocation.getLatitude(),mLocation.getLongitude());
+            } catch (Exception e) {
+                e.printStackTrace();
+                return new ArrayList<>();
+            }
+        }
+
+        /**
+         * 根据获取的Record把标记添加到地图上
+         * @param records
+         */
+        @Override
+        protected void onPostExecute(List<Record> records) {
+            for (Record r : records) {
+                aMap.addMarker(new MarkerOptions()
+                        .position(new LatLng(r.getLatitude(), r.getLongitude()))
+                        .title(types[r.getType()])
+                        .snippet(r.getDescription()));//添加描述
+            }
+        }
+    }
+
 }

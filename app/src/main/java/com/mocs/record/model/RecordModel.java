@@ -8,7 +8,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 import com.mocs.R;
-import com.mocs.common.bean.RecordForm;
+import com.mocs.common.bean.Record;
 import com.mocs.common.bean.RecordInfo;
 import com.mocs.common.bean.RecordStep;
 import com.mocs.common.bean.User;
@@ -48,7 +48,7 @@ public class RecordModel {
      */
     public List<RecordStep> getRecordStepList(int recordId)throws Exception{
         OkHttpClient client=new OkHttpClient();
-        HttpUrl url=HttpUrl.parse(mServiceHost+"/records/steps").newBuilder()
+        HttpUrl url=HttpUrl.parse(mServiceHost+"/records/step").newBuilder()
                 .addQueryParameter("record_id",String.valueOf(recordId))
                 .build();
         Request request=new Request.Builder()
@@ -64,6 +64,31 @@ public class RecordModel {
             throw new Exception(jsonObject.get("msg").getAsString());
         JsonArray array=jsonObject.get("steps").getAsJsonArray();
         List<RecordStep> list=new Gson().fromJson(array,new TypeToken<List<RecordStep>>(){}.getType());
+        return list;
+    }
+
+    /**
+     * 根据经纬度，获取附近的RecordInfo
+     * @param latitude
+     * @param longitude
+     * @return
+     * @throws Exception
+     */
+    public List<Record> getNearbyRecordInfoList(double latitude,double longitude) throws Exception {
+        OkHttpClient client=new OkHttpClient();
+        HttpUrl url=HttpUrl.parse(mServiceHost+"/records").newBuilder()
+                .addQueryParameter("latitude",String.valueOf(latitude))
+                .addQueryParameter("longitude",String.valueOf(longitude))
+                .build();
+        Request request=new Request.Builder()
+                .url(url)
+                .get()
+                .build();
+        Response response=client.newCall(request).execute();
+        if (!response.isSuccessful())
+            throw new Exception(mContext.getResources().getString(R.string.network_error_message));
+        JsonArray jsonArray=new JsonParser().parse(response.body().string()).getAsJsonArray();
+        List<Record> list=new Gson().fromJson(jsonArray,new TypeToken<List<Record>>(){}.getType());
         return list;
     }
     /**
@@ -99,12 +124,12 @@ public class RecordModel {
     /**
      * 上传记录中的文字部分，上传完成后获得record_id,用于上传对应image
      *
-     * @param recordForm
+     * @param record
      * @return 返回生成的recordId
      * @throws Exception
      */
-    public int uploadRecordText(RecordForm recordForm) throws Exception {
-        String formJson = new Gson().toJson(recordForm);
+    public int uploadRecordText(Record record) throws Exception {
+        String formJson = new Gson().toJson(record);
         MediaType mediaType = MediaType.parse("application/json");
         Request request = new Request.Builder()
                 .header("Authorization", mLocalUesr.getAccessToken())

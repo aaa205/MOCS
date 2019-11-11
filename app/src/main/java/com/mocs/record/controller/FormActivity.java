@@ -21,7 +21,7 @@ import com.bilibili.boxing.model.config.BoxingConfig;
 import com.bilibili.boxing.model.entity.BaseMedia;
 import com.bilibili.boxing_impl.ui.BoxingActivity;
 import com.mocs.R;
-import com.mocs.common.bean.RecordForm;
+import com.mocs.common.bean.Record;
 import com.mocs.common.bean.User;
 import com.mocs.common.loader.MyBoxingMediaLoader;
 import com.mocs.record.adapter.ImageGridAdapter;
@@ -64,7 +64,7 @@ public class FormActivity extends AppCompatActivity {
     private ImageGridAdapter mGridAdapter;
     private ArrayList<String> mPathList;//图片路径集合
     private User mLocalUser;
-    private RecordForm mRecordForm;//表格信息
+    private Record mRecord;//表格信息
     private int mType;//种类编号
     private RecordModel mRecordModel;
     private static final int SELECT_IMAGE = 2;//选择图片
@@ -77,7 +77,7 @@ public class FormActivity extends AppCompatActivity {
         setContentView(R.layout.activity_form);
         ButterKnife.bind(this);
         mPathList = new ArrayList<>();
-        mRecordForm = new RecordForm();
+        mRecord = new Record();
         mLocalUser = getIntent().getParcelableExtra(LOCAL_USER);
         mRecordModel=new RecordModel(this,mLocalUser);
         initView();
@@ -117,6 +117,7 @@ public class FormActivity extends AppCompatActivity {
         //点击定位
         layoutAddress.setOnClickListener((v) -> {
             Intent intent = new Intent(FormActivity.this, MapActivity.class);
+            intent.putExtra("local_user",mLocalUser);
             startActivityForResult(intent, GET_LOCATION_INFO);
         });
         //提交按钮
@@ -125,14 +126,14 @@ public class FormActivity extends AppCompatActivity {
             String address = textAddress.getText().toString();
             String desc = editDescription.getText().toString();
             //为空表示没有获取地理位置
-            if (mRecordForm==null||desc.isEmpty() || type.isEmpty() || address.isEmpty()) {
+            if (mRecord ==null||desc.isEmpty() || type.isEmpty() || address.isEmpty()) {
                 Toast.makeText(FormActivity.this, "有项目未填写", Toast.LENGTH_SHORT).show();
             } else {
                 //注入Bean
-                mRecordForm.setDescription(desc);
-                mRecordForm.setCreatedTime(System.currentTimeMillis());
-                mRecordForm.setType(mType);
-                mRecordForm.setUserId(mLocalUser.getUserId());
+                mRecord.setDescription(desc);
+                mRecord.setCreatedTime(System.currentTimeMillis());
+                mRecord.setType(mType);
+                mRecord.setUserId(mLocalUser.getUserId());
                 new FormAsyncTask().execute();//上传
 
             }
@@ -163,8 +164,8 @@ public class FormActivity extends AppCompatActivity {
                     }
                     break;
                 case GET_LOCATION_INFO:
-                    mRecordForm = data.getParcelableExtra("record_form");
-                    textAddress.setText(mRecordForm.getAddress());
+                    mRecord = data.getParcelableExtra("record_form");
+                    textAddress.setText(mRecord.getAddress());
                     break;
             }
         }
@@ -199,7 +200,7 @@ public class FormActivity extends AppCompatActivity {
             try {
                 //先检查图片能否上传
                 if (mRecordModel.isUploadable(mPathList)) {
-                    int id=mRecordModel.uploadRecordText(mRecordForm);
+                    int id=mRecordModel.uploadRecordText(mRecord);
                     mRecordModel.uploadRecordImage(mPathList,id);
                 }else{
                     msg="请勿上传大于2.5MB的图片";
@@ -220,7 +221,8 @@ public class FormActivity extends AppCompatActivity {
             if (s!=null)
                 Toast.makeText(FormActivity.this, s, Toast.LENGTH_SHORT).show();
             else
-                finishActivity(RecordFragment.REFRESH);
+                setResult(RESULT_OK);//通知刷新
+                finish();
         }
     }
 }

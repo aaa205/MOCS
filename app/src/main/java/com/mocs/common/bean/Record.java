@@ -6,7 +6,8 @@ import android.os.Parcelable;
 /**
  * 存储FormActivity中填写的数据,不包含选择的图片，用于向服务器发送创建Record
  */
-public class RecordForm implements Parcelable {
+public class Record implements Parcelable {
+    private int recordId;
     private long createdTime;//创建时间
     private int userId;
     private int type;
@@ -19,11 +20,12 @@ public class RecordForm implements Parcelable {
     private String district;
     private String street;
 
-    public RecordForm() {
+    public Record() {
     }
 
 
-    protected RecordForm(Parcel in) {
+    protected Record(Parcel in) {
+        recordId = in.readInt();
         createdTime = in.readLong();
         userId = in.readInt();
         type = in.readInt();
@@ -40,6 +42,7 @@ public class RecordForm implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(recordId);
         dest.writeLong(createdTime);
         dest.writeInt(userId);
         dest.writeInt(type);
@@ -59,15 +62,15 @@ public class RecordForm implements Parcelable {
         return 0;
     }
 
-    public static final Creator<RecordForm> CREATOR = new Creator<RecordForm>() {
+    public static final Creator<Record> CREATOR = new Creator<Record>() {
         @Override
-        public RecordForm createFromParcel(Parcel in) {
-            return new RecordForm(in);
+        public Record createFromParcel(Parcel in) {
+            return new Record(in);
         }
 
         @Override
-        public RecordForm[] newArray(int size) {
-            return new RecordForm[size];
+        public Record[] newArray(int size) {
+            return new Record[size];
         }
     };
 
@@ -167,5 +170,13 @@ public class RecordForm implements Parcelable {
 
     public void setUserId(int userId) {
         this.userId = userId;
+    }
+
+    public int getRecordId() {
+        return recordId;
+    }
+
+    public void setRecordId(int recordId) {
+        this.recordId = recordId;
     }
 }
