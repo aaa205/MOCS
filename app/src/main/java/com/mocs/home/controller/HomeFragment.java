@@ -5,7 +5,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,14 +50,6 @@ public class HomeFragment extends BaseLazyFragment {
     @Override
     protected void lazyLoadData() {
         initView();
-        new Thread(() -> {
-            try {
-                Thread.sleep(2000);
-                Log.d("Lazy", "load data");
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }).start();
     }
 
     /**
@@ -66,8 +57,8 @@ public class HomeFragment extends BaseLazyFragment {
      */
     private void initView() {
         List<String> images = new ArrayList<>();
-        images.add("https://www.baidu.com/img/baidu_jgylogo3.gif");
-        images.add("https://www.baidu.com/img/baidu_jgylogo3.gif");
+        images.add("http://www.zgjtb.com/photo/img/2019-10/10/30996a91-72fc-4823-94a1-cb1bcd3b2cd4.jpg");
+        images.add("http://www.zgjtb.com/photo/img/2019-11/12/t2_(72X0X589X399)7cc44cb5-951c-4950-853a-080e76a6ef8a_zsize_watermark.png");
         List<String> titles=new ArrayList<>();
         titles.add("title1");
         titles.add("title2");
@@ -75,13 +66,13 @@ public class HomeFragment extends BaseLazyFragment {
         banner.setImages(images);
         banner.setBannerTitles(titles);
         banner.start();
-        for(int i=0;i<8;i++){
+        for(int i=0;i<3;i++){
             News news=new News();
             news.setId(1);
             news.setTime(System.currentTimeMillis());
-            news.setTitle("《死或生》公开新参战角色“红叶”将于9月19日配信");
+            news.setTitle("白洋长江公路大桥过江主跨桥面横梁安装工作进入煞尾冲刺阶段");
             news.setType("资讯");
-            news.setBannerURL("https://xyoss.g.com.cn/xy-production/cms3.0/2019/0915/20190915174509-4870-69036.jpg");
+            news.setBannerURL("http://www.zgjtb.com/photo/img/2019-11/11/ac28d6f2-e5e7-4d75-8f00-e2455e5ca190_zsize_watermark.png");
             mNewsList.add(news);
         }
 

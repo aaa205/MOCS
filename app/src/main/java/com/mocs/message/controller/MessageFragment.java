@@ -1,8 +1,6 @@
 package com.mocs.message.controller;
 
-import android.content.Context;
 import android.content.DialogInterface;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -29,8 +27,6 @@ import butterknife.Unbinder;
 
 
 public class MessageFragment extends Fragment {
-
-
     private View view;//定义view用来设置fragment的layout
     public RecyclerView messageRecyclerView;//定义RecyclerView
     public RefreshLayout refreshLayout;//定义RefreshLayout
@@ -186,12 +182,12 @@ public class MessageFragment extends Fragment {
     }
 
     private List<Message> getMessages(){
-        for(int i=1;i<=20;i++){
+        for(int i=1;i<=1;i++){
             Message message=new Message();
             message.setTag(R.mipmap.ic_launcher);
-            message.setName("消息"+i);
-            message.setContent("内容"+i);
-            message.setTime("07-06 12:00");
+            message.setName("小助手");
+            message.setContent("你好");
+            message.setTime("11月13日 12:51");
             messagesList.add(message);
         }
         return messagesList;

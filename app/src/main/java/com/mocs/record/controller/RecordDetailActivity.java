@@ -70,10 +70,6 @@ public class RecordDetailActivity extends AppCompatActivity {
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         timeLine.setLayoutManager(layoutManager);
-        RecordStep step=new RecordStep();
-        step.setDescription("111");
-        step.setCreatedTime(11);
-        mStepList.add(step);
         timeLine.setAdapter(new TimeLineAdapter(mStepList,this));
 
     }

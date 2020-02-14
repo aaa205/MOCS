@@ -127,14 +127,14 @@ public class LoginActivity extends AppCompatActivity {
                             @Override
                             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                                 if(!response.isSuccessful()){
-                                    Toast.makeText(LoginActivity.this, getText(R.string.network_error_message), Toast.LENGTH_SHORT).show();
+                                    //Toast.makeText(LoginActivity.this, getText(R.string.network_error_message), Toast.LENGTH_SHORT).show();
                                     return;
                                 }
                                 JsonObject jsonObject = new JsonParser().parse(response.body().string()).getAsJsonObject();
                                 //检查是否登录成功
                                 int status =jsonObject.get("status").getAsInt();
                                 if(status!=200){
-                                    Toast.makeText(LoginActivity.this,"登录失败，status="+status,Toast.LENGTH_SHORT).show();
+                                    //Toast.makeText(LoginActivity.this,"登录失败，status="+status,Toast.LENGTH_SHORT).show();
                                     return;
                                 }
                                 int id=jsonObject.get("user_id").getAsInt();

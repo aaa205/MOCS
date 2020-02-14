@@ -13,4 +13,10 @@
         <item>处理中</item>
         <item>已完成</item>
     </string-array>
+    <!--Record状态对应的颜色-->
+    <string-array name="record_state_color">
+        <item>#888888</item>
+        <item>#FF7F00</item>
+        <item>#4CAF50</item>
+    </string-array>
 </resources>

@@ -15,7 +15,9 @@ import com.mocs.message.controller.MessageFragment;
 
 import java.util.List;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHolder>{
 
@@ -24,19 +26,19 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         View itemview;
-//        ImageView tTag;
-        TextView tName;
-        TextView tContent;
-        TextView tTime;
+        @BindView(R.id.message_avatar)
+        CircleImageView avatar;
+        @BindView(R.id.message_name)
+        TextView name;
+        @BindView(R.id.message_content)
+        TextView content;
+        @BindView(R.id.message_time)
+        TextView time;
 
         public ViewHolder(View view) {
             super(view);
             ButterKnife.bind(this,view);
             itemview=view;
-//            tTag = (ImageView) view.findViewById(R.id.message_image);
-            tName = (TextView) view.findViewById(R.id.message_name);
-            tContent = (TextView) view.findViewById(R.id.message_content);
-            tTime = (TextView) view.findViewById(R.id.message_time);
         }
 
     }
@@ -58,10 +60,9 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
     @Override
     public void onBindViewHolder(@NonNull MessageAdapter.ViewHolder holder, int position) {
         MessageFragment.Message message=mMessageList.get(position);
-        holder.tName.setText(message.getName());
-        holder.tContent.setText(message.getContent());
-        holder.tTime.setText(message.getTime());
-//        Glide.with(mContext).load(message.getTag()).into(holder.tTag);
+        holder.name.setText(message.getName());
+        holder.content.setText(message.getContent());
+        holder.time.setText(message.getTime());
         //在adapter中设置item点击事件
         if (mItemClickListener!=null){
             holder.itemview.setOnClickListener(new View.OnClickListener() {

@@ -1,6 +1,7 @@
 package com.mocs.record.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.format.DateUtils;
@@ -24,11 +25,13 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.ViewHolder
     private List<RecordInfo> mRecordInfoList;
     private String[] types;
     private String[] states;
+    private String[] stateColors;
     private OnItemClickListener mListener;
     public RecordAdapter(List<RecordInfo> recordInfoList, Context context) {
         this.mRecordInfoList = recordInfoList;
         this.types=context.getResources().getStringArray(R.array.record_type);
         this.states=context.getResources().getStringArray(R.array.record_state);
+        this.stateColors=context.getResources().getStringArray(R.array.record_state_color);
     }
 
     public interface OnItemClickListener{
@@ -70,6 +73,7 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.ViewHolder
         viewHolder.typeText.setText(types[recordInfo.getType()]);
         viewHolder.descriptionText.setText(recordInfo.getDescription());
         viewHolder.stateText.setText(states[recordInfo.getState()]);
+        viewHolder.stateText.setTextColor(Color.parseColor(stateColors[recordInfo.getState()]));
         viewHolder.itemView.setOnClickListener((v)->{
             if (mListener!=null)
                 mListener.onItemClick(i);
