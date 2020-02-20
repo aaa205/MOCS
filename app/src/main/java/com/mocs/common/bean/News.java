@@ -3,16 +3,10 @@ package com.mocs.common.bean;
 public class News {
     private int id;
     private String title;
-    private String bannerURL;
-    private String type;
-    private long time;
-    public News(){
-        id=-1;
-        title="";
-        bannerURL ="";
-        type="";
-        time=0;
-    }
+    private String content;
+    private long createdTime;
+    private String cover;
+
     public int getId() {
         return id;
     }
@@ -29,27 +23,27 @@ public class News {
         this.title = title;
     }
 
-    public String getBannerURL() {
-        return bannerURL;
+    public String getContent() {
+        return content;
     }
 
-    public void setBannerURL(String bannerURL) {
-        this.bannerURL = bannerURL;
+    public void setContent(String content) {
+        this.content = content;
     }
 
-    public long getTime() {
-        return time;
+    public long getCreatedTime() {
+        return createdTime;
     }
 
-    public void setTime(long time) {
-        this.time = time;
+    public void setCreatedTime(long createdTime) {
+        this.createdTime = createdTime;
     }
 
-    public String getType() {
-        return type;
+    public String getCover() {
+        return cover;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setCover(String cover) {
+        this.cover = cover;
     }
 }

@@ -3,14 +3,10 @@ package com.mocs.record.controller;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Debug;
-import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -20,11 +16,8 @@ import com.mocs.common.base.BaseLazyFragment;
 import com.mocs.common.bean.RecordInfo;
 import com.mocs.common.bean.User;
 import com.mocs.record.adapter.RecordAdapter;
-import com.mocs.common.bean.RecordStep;
 import com.mocs.record.model.RecordModel;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
-import com.scwang.smartrefresh.layout.api.RefreshLayout;
-import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +26,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import jp.wasabeef.recyclerview.animators.FadeInUpAnimator;
-import jp.wasabeef.recyclerview.animators.SlideInDownAnimator;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -47,7 +39,7 @@ import static android.app.Activity.RESULT_OK;
 
 public class RecordFragment extends BaseLazyFragment {
     private static final String LOCAL_USER = "local_user";
-    protected static final int REFRESH=19;
+    protected static final int REFRESH = 19;
     private Unbinder mUnbinder;
     @BindView(R.id.recyclerView_record)
     RecyclerView recyclerView;
@@ -99,10 +91,10 @@ public class RecordFragment extends BaseLazyFragment {
         recyclerView.setLayoutManager(layoutManager);
         //创建adapter 设置单个元素的点击监听器
         RecordAdapter adapter = new RecordAdapter(mRecordInfoList, getContext());
-        adapter.addOnItemClickListener((i)->{
-            Intent intent=new Intent(getContext(),RecordDetailActivity.class);
-            intent.putExtra(LOCAL_USER,mLocalUser);//传入用户信息
-            intent.putExtra("record_info",mRecordInfoList.get(i));//传入RecordInfo类
+        adapter.setOnItemClickListener((i) -> {
+            Intent intent = new Intent(getContext(), RecordDetailActivity.class);
+            intent.putExtra(LOCAL_USER, mLocalUser);//传入用户信息
+            intent.putExtra("record_info", mRecordInfoList.get(i));//传入RecordInfo类
             startActivity(intent);
         });
         recyclerView.setItemAnimator(new FadeInUpAnimator());
@@ -111,10 +103,10 @@ public class RecordFragment extends BaseLazyFragment {
         floatingButton.setOnClickListener((v) -> {
             Intent intent = new Intent(getContext(), FormActivity.class);
             intent.putExtras(getArguments());//传入mLocalUser
-            startActivityForResult(intent,REFRESH);
+            startActivityForResult(intent, REFRESH);
         });
         refreshLayout.setOnRefreshListener((layout -> new RefreshAsyncTask().execute()));
-        refreshLayout.setOnLoadMoreListener((layout->new LoadMoreAsyncTask().execute()));
+        refreshLayout.setOnLoadMoreListener((layout -> new LoadMoreAsyncTask().execute()));
     }
 
     @Override
@@ -125,8 +117,8 @@ public class RecordFragment extends BaseLazyFragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode==RESULT_OK){
-            switch (requestCode){
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
                 case REFRESH:
                     refreshLayout.autoRefresh();
             }
@@ -143,9 +135,9 @@ public class RecordFragment extends BaseLazyFragment {
         protected String doInBackground(Void... voids) {
             String msg = null;
             try {
-               mRecordInfoList.clear();
-               mRecordInfoList.addAll(mRecordModel.getRecordInfoList(0,mRows));
-                mOffset=0;//确定获取成功后再修改偏移量
+                mRecordInfoList.clear();
+                mRecordInfoList.addAll(mRecordModel.getRecordInfoList(0, mRows));
+                mOffset = 0;//确定获取成功后再修改偏移量
             } catch (Exception e) {
                 msg = e.getMessage();
             } finally {
@@ -155,44 +147,46 @@ public class RecordFragment extends BaseLazyFragment {
 
         @Override
         protected void onPostExecute(String s) {
-            if (s!=null){
+            if (s != null) {
                 Toast.makeText(getContext(), s, Toast.LENGTH_SHORT).show();
                 return;
             }
             refreshLayout.setNoMoreData(false);
             refreshLayout.finishRefresh();
-            recyclerView.getAdapter().notifyItemRangeInserted(0,mRecordInfoList.size());
+            recyclerView.getAdapter().notifyItemRangeInserted(0, mRecordInfoList.size());
 
         }
     }
+
     /**
      * 下滑获取更多 每次额外获取rows条RecordInfo
      */
-    private class LoadMoreAsyncTask extends AsyncTask<Void,Integer,String>{
-        private int originalSize=mRecordInfoList.size();
+    private class LoadMoreAsyncTask extends AsyncTask<Void, Integer, String> {
+        private int originalSize = mRecordInfoList.size();
+
         @Override
         protected String doInBackground(Void... voids) {
-            String msg=null;
-            try{
-                mRecordInfoList.addAll(mRecordModel.getRecordInfoList(mOffset+mRows,mRows));//添加后rows条
-                mOffset+=mRows;//确定获取成功后再修改偏移量
-            }catch (Exception e){
-                msg=e.getMessage();
-            }finally {
+            String msg = null;
+            try {
+                mRecordInfoList.addAll(mRecordModel.getRecordInfoList(mOffset + mRows, mRows));//添加后rows条
+                mOffset += mRows;//确定获取成功后再修改偏移量
+            } catch (Exception e) {
+                msg = e.getMessage();
+            } finally {
                 return msg;
             }
         }
 
         @Override
         protected void onPostExecute(String s) {
-            if (s!=null){
+            if (s != null) {
                 Toast.makeText(getContext(), s, Toast.LENGTH_SHORT).show();
                 return;
             }
-            if (originalSize==mRecordInfoList.size())
+            if (originalSize == mRecordInfoList.size())
                 refreshLayout.setNoMoreData(true);//没有更多数据了
             refreshLayout.finishLoadMore();
-            recyclerView.getAdapter().notifyItemRangeInserted(originalSize,mOffset);
+            recyclerView.getAdapter().notifyItemRangeInserted(originalSize, mOffset);
         }
     }
 

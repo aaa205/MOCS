@@ -1,5 +1,7 @@
 package com.mocs.home.controller;
 
+import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -8,20 +10,24 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.mocs.R;
 import com.mocs.common.base.BaseLazyFragment;
 import com.mocs.common.bean.News;
 import com.mocs.home.adapter.NewsAdapter;
-import com.mocs.home.loader.GlideImageLoader;
+import com.mocs.home.loader.BannerImageLoader;
+import com.mocs.home.model.HomeData;
+import com.mocs.home.model.NewsModel;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.youth.banner.Banner;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.stream.Collectors;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import jp.wasabeef.recyclerview.animators.FadeInUpAnimator;
 
 /**
  * 实现了懒加载,首页碎片
@@ -32,8 +38,10 @@ public class HomeFragment extends BaseLazyFragment {
     @BindView(R.id.banner_home)
     Banner banner;
     @BindView(R.id.news_list_home)
-    RecyclerView newsRecycler;
-    private List<News> mNewsList = new ArrayList<>();
+    RecyclerView newsListView;
+    @BindView(R.id.refresh_layout_home)
+    RefreshLayout refreshLayout;
+    private HomeData homeData=new HomeData();
 
     @Nullable
     @Override
@@ -41,6 +49,7 @@ public class HomeFragment extends BaseLazyFragment {
         rootView = inflater.inflate(R.layout.fragment_home, container, false);
         mUnbinder = ButterKnife.bind(this, rootView);
         super.onCreateView(inflater, container, savedInstanceState);//一定要先加载自己的layout再调用父类的方法,才能实现懒加载
+        homeData=new HomeData();
         return rootView;
     }
 
@@ -49,37 +58,39 @@ public class HomeFragment extends BaseLazyFragment {
      */
     @Override
     protected void lazyLoadData() {
-        initView();
+        fetchData();
+    }
+    private void fetchData(){
+        refreshLayout.setEnableAutoLoadMore(false);
+        refreshLayout.setOnRefreshListener(layout->new RefreshAsyncTask().execute());
+        refreshLayout.autoRefresh();
     }
 
     /**
      * 初始化View
      */
     private void initView() {
-        List<String> images = new ArrayList<>();
-        images.add("http://www.zgjtb.com/photo/img/2019-10/10/30996a91-72fc-4823-94a1-cb1bcd3b2cd4.jpg");
-        images.add("http://www.zgjtb.com/photo/img/2019-11/12/t2_(72X0X589X399)7cc44cb5-951c-4950-853a-080e76a6ef8a_zsize_watermark.png");
-        List<String> titles=new ArrayList<>();
-        titles.add("title1");
-        titles.add("title2");
-        banner.setImageLoader(new GlideImageLoader());
-        banner.setImages(images);
-        banner.setBannerTitles(titles);
+        banner.setImageLoader(new BannerImageLoader());
+        banner.setImages(homeData.getBanners().stream().map(News::getCover).collect(Collectors.toList()));
+        banner.setBannerTitles(homeData.getBanners().stream().map(News::getTitle).collect(Collectors.toList()));
         banner.start();
-        for(int i=0;i<3;i++){
-            News news=new News();
-            news.setId(1);
-            news.setTime(System.currentTimeMillis());
-            news.setTitle("白洋长江公路大桥过江主跨桥面横梁安装工作进入煞尾冲刺阶段");
-            news.setType("资讯");
-            news.setBannerURL("http://www.zgjtb.com/photo/img/2019-11/11/ac28d6f2-e5e7-4d75-8f00-e2455e5ca190_zsize_watermark.png");
-            mNewsList.add(news);
-        }
-
-        NewsAdapter newsAdapter = new NewsAdapter(mNewsList,getContext());
-        newsRecycler.setAdapter(newsAdapter);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
-        newsRecycler.setLayoutManager(layoutManager);
+        LinearLayoutManager manager=new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false){
+            @Override
+            public boolean canScrollVertically() {
+                return false;
+            }
+        };
+        newsListView.setLayoutManager(manager);
+        newsListView.setItemAnimator(new FadeInUpAnimator());
+        newsListView.setNestedScrollingEnabled(false);
+        NewsAdapter newsAdapter = new NewsAdapter(homeData.getList(),getContext());
+        newsAdapter.setOnItemClickListener(i -> {
+            Intent intent = new Intent(getContext(), NewsActivity.class);
+            intent.putExtra("news_id", homeData.getList().get(i).getId());
+            startActivity(intent);
+        });
+        newsListView.setAdapter(newsAdapter);
+        newsAdapter.notifyItemRangeInserted(0,homeData.getList().size());
     }
 
     @Override
@@ -90,6 +101,33 @@ public class HomeFragment extends BaseLazyFragment {
 
     public static HomeFragment newInstance() {
         return new HomeFragment();
+    }
+
+    private class RefreshAsyncTask extends AsyncTask<Void, Integer, String> {
+
+        @Override
+        protected String doInBackground(Void... voids) {
+            String msg = null;
+            try {
+                homeData= NewsModel.fetchNewsData();
+            } catch (Exception e) {
+                msg = e.getMessage();
+                homeData=new HomeData();
+            } finally {
+                return msg;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            if (s!=null){
+                Toast.makeText(getContext(), s, Toast.LENGTH_SHORT).show();
+                return;
+            }
+            refreshLayout.setNoMoreData(true);
+            refreshLayout.finishRefresh();
+            initView();
+        }
     }
 
 }

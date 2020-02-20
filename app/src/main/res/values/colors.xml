@@ -5,7 +5,7 @@
     <color name="colorAccent">#2dcb70</color>
     <color name="colorClickableText">#3786e6</color>
     <color name="colorPageTitle">#2A2A2A</color>
-    <color name="colorGreyLine">#d2d2d2</color>
+    <color name="colorGreyLine">#C0C0C0</color>
     <color name="colorGreyTab">#9b9b9b</color>
     <color name="white">#ffffffff</color>
 </resources>
